@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Search, MapPin, Globe } from 'lucide-react';
+import { Menu, X, Search, MapPin, Globe, ShoppingCart } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
-const Header = ({ language, toggleLanguage }) => {
+const Header = ({ language, toggleLanguage, onCartClick }) => {
+  const { itemCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -100,15 +102,40 @@ const Header = ({ language, toggleLanguage }) => {
                 {link.label}
               </Link>
             ))}
+            {/* Cart Button */}
+            <button
+              onClick={onCartClick}
+              className="relative p-2 text-gray-700 hover:text-blue-600 transition-colors"
+            >
+              <ShoppingCart size={24} />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+            </button>
           </nav>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2"
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile cart & menu buttons */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={onCartClick}
+              className="relative p-2 text-gray-700"
+            >
+              <ShoppingCart size={22} />
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  {itemCount}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
 
