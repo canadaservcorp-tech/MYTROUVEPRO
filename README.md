@@ -1,42 +1,90 @@
-# myTROUVEpro Backend - Payment Server
+# myTROUVEpro Authentication System
 
-Payment processing server for myTROUVEpro using Square API.
+## Files to Upload to GitHub
 
-## Quick Deploy to Railway (Recommended)
-
-1. Go to [railway.app](https://railway.app)
-2. Click "New Project" → "Deploy from GitHub repo"
-3. Connect this repository
-4. Add environment variables (see below)
-5. Deploy!
-
-## Environment Variables
-
-Set these in Railway/Render/Heroku:
-
+### New Files (Create these):
 ```
-SQUARE_APPLICATION_ID=sandbox-sq0idb-Z6g4W5yCPznRerTcgUTLBQ
-SQUARE_ACCESS_TOKEN=EAAAl8hoVJHtRCbpSQVcM5Hi4K8qWpj4cexH_Vx-PJJYM9534a-435P4n8x3Q06Y
-SQUARE_LOCATION_ID=LGKWFNKR77SCA
-SQUARE_ENVIRONMENT=sandbox
-PORT=3001
+src/
+├── context/
+│   └── AuthContext.jsx       # User authentication state management
+├── components/
+│   ├── AuthModal.jsx         # Login/Signup modal
+│   ├── UserMenu.jsx          # Dropdown menu for logged-in users
+│   └── Header.jsx            # Updated header with auth buttons
+├── pages/
+│   ├── ProviderDashboard.jsx # Dashboard for service providers
+│   ├── SeekerDashboard.jsx   # Dashboard for customers
+│   └── ProfilePage.jsx       # User profile settings
 ```
 
-## API Endpoints
+## Integration Steps
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Health check |
-| GET | `/api/config` | Get Square config |
-| GET | `/api/test` | Test Square connection |
-| POST | `/api/create-payment-link` | Create payment link |
-| POST | `/api/process-payment` | Process card payment |
-| GET | `/api/payment/:id` | Get payment status |
-| GET | `/api/payments` | List all payments |
-| POST | `/api/refund` | Process refund |
+### Step 1: Wrap App with AuthProvider
 
-## Company
+In your main `App.jsx`, wrap everything with AuthProvider:
 
-Performance Cristal Technologies Avancées S.A.  
-NEQ: 2280629637  
-Laval, Quebec, Canada
+```jsx
+import { AuthProvider } from './context/AuthContext';
+
+function App() {
+  return (
+    <AuthProvider>
+      {/* Your existing app content */}
+    </AuthProvider>
+  );
+}
+```
+
+### Step 2: Add Routes
+
+Add these routes to your App.jsx:
+
+```jsx
+import ProviderDashboard from './pages/ProviderDashboard';
+import SeekerDashboard from './pages/SeekerDashboard';
+import ProfilePage from './pages/ProfilePage';
+
+// Inside Routes:
+<Route path="/dashboard" element={<ProviderDashboard />} />
+<Route path="/my-dashboard" element={<SeekerDashboard />} />
+<Route path="/profile" element={<ProfilePage />} />
+```
+
+### Step 3: Replace Header
+
+Replace your existing Header component with the new one that includes auth buttons.
+
+## Business Model Implemented
+
+- ✅ FREE registration for all users
+- ✅ Providers: 10% commission on bookings
+- ✅ Seekers: Always FREE
+- ✅ Contact info hidden until booking
+
+## Features Included
+
+1. **Sign In / Sign Up** buttons in header
+2. **Role Selection**: Seeker or Provider
+3. **Provider Registration** with:
+   - Business name
+   - Service category
+   - Description
+   - 10% commission notice
+4. **Seeker Registration** (basic info)
+5. **User Dashboards**:
+   - Provider: Earnings, bookings, services
+   - Seeker: Upcoming bookings, favorites
+6. **Profile Settings** page
+7. **User Menu** with role-specific options
+
+## For Netlify Agent
+
+Copy this prompt to add authentication:
+
+```
+Add user authentication system:
+1. Import AuthProvider from context/AuthContext and wrap the app
+2. Replace Header with new Header component that has Sign In / Join Free buttons
+3. Add routes for /dashboard, /my-dashboard, /profile
+4. Show different dashboards based on user role (provider vs seeker)
+```
