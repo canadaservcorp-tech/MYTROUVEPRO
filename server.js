@@ -161,12 +161,12 @@ app.post('/api/create-payment-link', async (req, res) => {
           }
         ],
         metadata: {
-          providerId: providerId || '',
-          providerName: providerName || '',
-          customerName: customerName || '',
-          bookingDate: bookingDate || '',
-          bookingTime: bookingTime || '',
-          address: address || '',
+          providerId: providerId || 'N/A',
+          providerName: providerName || 'N/A',
+          customerName: customerName || 'N/A',
+          bookingDate: bookingDate || 'TBD',
+          bookingTime: bookingTime || 'TBD',
+          address: address || 'TBD',
           source: 'mytrouvepro-app'
         }
       },
