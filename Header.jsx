@@ -29,11 +29,11 @@ const Header = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center">
-              <span className="text-2xl font-bold">
-                <span className="text-gray-900">my</span>
-                <span className="text-red-600">TROUVE</span>
-                <span className="text-gray-900">pro</span>
-              </span>
+              <img
+                src="/logo.svg"
+                alt="myTROUVEpro"
+                className="h-10 w-auto"
+              />
             </Link>
 
             {/* Search Bar - Desktop */}
