@@ -24,7 +24,7 @@ const Footer = ({ language }) => {
       business: 'Performance Cristal Technologies Avancées S.A.',
     },
     fr: {
-      slogan: 'À côté de toi',
+      slogan: 'Près de toi',
       description: 'Vous connecter avec des fournisseurs de services locaux de confiance.',
       services: 'Services',
       company: 'Entreprise',
