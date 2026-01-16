@@ -62,15 +62,12 @@ const Header = ({ language, toggleLanguage }) => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">mT</span>
-            </div>
-            <div>
-              <span className="text-xl font-bold text-blue-900">myTROUVE</span>
-              <span className="text-xl font-bold text-green-500">pro</span>
-              <p className="text-xs text-gray-500 -mt-1">{t.slogan}</p>
-            </div>
+          <Link to="/" className="flex items-center">
+            <img
+              src="/logo.svg"
+              alt="myTROUVEpro"
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Search bar - desktop */}
