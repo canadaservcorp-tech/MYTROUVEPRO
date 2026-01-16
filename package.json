@@ -1,24 +1,39 @@
 {
-  "name": "mytrouvepro-backend",
+  "name": "mytrouvepro",
+  "private": true,
   "version": "1.0.0",
-  "description": "myTROUVEpro Payment Server - Square Integration",
-  "main": "server.js",
+  "type": "module",
+  "description": "myTROUVEpro - Find local service providers near you",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "server": "nodemon server.js"
   },
-  "keywords": ["square", "payments", "mytrouvepro", "quebec"],
-  "author": "Performance Cristal Technologies Avancées S.A.",
-  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "lucide-react": "^0.263.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.15.0",
     "square": "^35.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.14",
+    "nodemon": "^3.0.2",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.4.5"
   },
+  "keywords": ["services", "local", "providers", "mytrouvepro", "quebec"],
+  "author": "Performance Cristal Technologies Avancées S.A.",
+  "license": "ISC",
   "engines": {
     "node": ">=18.0.0"
   }
