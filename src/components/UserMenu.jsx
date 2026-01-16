@@ -26,7 +26,7 @@ const UserMenu = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center space-x-2 px-3 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
       >
-        <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white font-semibold">
+        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
           {user?.firstName?.charAt(0) || 'U'}
         </div>
         <span className="hidden md:block font-medium text-gray-700">

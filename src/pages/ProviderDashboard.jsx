@@ -59,7 +59,7 @@ const ProviderDashboard = () => {
           </div>
           <Link
             to="/my-services/add"
-            className="mt-4 md:mt-0 inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700"
+            className="mt-4 md:mt-0 inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700"
           >
             <Plus size={20} className="mr-2" />
             Add New Service
@@ -91,7 +91,7 @@ const ProviderDashboard = () => {
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                 <Calendar className="text-blue-600" size={24} />
               </div>
-              <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
+              <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs font-medium">
                 {stats.pendingBookings} new
               </span>
             </div>
