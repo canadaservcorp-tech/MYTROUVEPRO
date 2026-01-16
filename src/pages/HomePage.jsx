@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Star, ArrowRight, Shield, Clock, ThumbsUp } from 'lucide-react';
+import AuthModal from '../components/AuthModal';
 
 const HomePage = ({ language }) => {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
   const content = {
     en: {
       heroTitle: 'Find Trusted Service Providers',
@@ -11,10 +14,10 @@ const HomePage = ({ language }) => {
       searchPlaceholder: 'What service are you looking for?',
       locationPlaceholder: 'Laval, QC',
       searchButton: 'Search',
-      
+
       categoriesTitle: 'Popular Services',
       categoriesSubtitle: 'Browse by category',
-      
+
       whyTitle: 'Why Choose myTROUVEpro?',
       whyVerified: 'Verified Providers',
       whyVerifiedDesc: 'All service providers are verified and reviewed',
@@ -22,40 +25,42 @@ const HomePage = ({ language }) => {
       whyFastDesc: 'Get quotes within hours, not days',
       whyTrust: 'Trusted Reviews',
       whyTrustDesc: 'Real reviews from real customers',
-      
+
       featuredTitle: 'Featured Providers',
       featuredSubtitle: 'Top-rated professionals in your area',
       viewAll: 'View All',
-      
+      bookNow: 'Book Now',
+
       ctaTitle: 'Are You a Service Provider?',
       ctaSubtitle: 'Join our network and grow your business',
       ctaButton: 'Register Now',
     },
     fr: {
       heroTitle: 'Trouvez des Fournisseurs de Services',
-      heroHighlight: 'Près de Chez Vous',
-      heroSubtitle: 'Connectez-vous avec des professionnels locaux vérifiés',
+      heroHighlight: 'Pres de Chez Vous',
+      heroSubtitle: 'Connectez-vous avec des professionnels locaux verifies',
       searchPlaceholder: 'Quel service cherchez-vous?',
       locationPlaceholder: 'Laval, QC',
       searchButton: 'Rechercher',
-      
+
       categoriesTitle: 'Services Populaires',
-      categoriesSubtitle: 'Parcourir par catégorie',
-      
+      categoriesSubtitle: 'Parcourir par categorie',
+
       whyTitle: 'Pourquoi Choisir myTROUVEpro?',
-      whyVerified: 'Fournisseurs Vérifiés',
-      whyVerifiedDesc: 'Tous les fournisseurs sont vérifiés et évalués',
-      whyFast: 'Réponse Rapide',
+      whyVerified: 'Fournisseurs Verifies',
+      whyVerifiedDesc: 'Tous les fournisseurs sont verifies et evalues',
+      whyFast: 'Reponse Rapide',
       whyFastDesc: 'Obtenez des devis en quelques heures',
       whyTrust: 'Avis de Confiance',
       whyTrustDesc: 'De vrais avis de vrais clients',
-      
+
       featuredTitle: 'Fournisseurs en Vedette',
-      featuredSubtitle: 'Professionnels les mieux notés de votre région',
+      featuredSubtitle: 'Professionnels les mieux notes de votre region',
       viewAll: 'Voir Tout',
-      
-      ctaTitle: 'Êtes-vous un Fournisseur de Services?',
-      ctaSubtitle: 'Rejoignez notre réseau et développez votre entreprise',
+      bookNow: 'Reserver',
+
+      ctaTitle: 'Etes-vous un Fournisseur de Services?',
+      ctaSubtitle: 'Rejoignez notre reseau et developpez votre entreprise',
       ctaButton: 'Inscrivez-vous',
     }
   };
@@ -64,11 +69,11 @@ const HomePage = ({ language }) => {
 
   const categories = [
     { id: 'plumbing', icon: '🔧', name: language === 'en' ? 'Plumbing' : 'Plomberie', count: 45 },
-    { id: 'electrical', icon: '⚡', name: language === 'en' ? 'Electrical' : 'Électricité', count: 38 },
+    { id: 'electrical', icon: '⚡', name: language === 'en' ? 'Electrical' : 'Electricite', count: 38 },
     { id: 'cleaning', icon: '🧹', name: language === 'en' ? 'Cleaning' : 'Nettoyage', count: 62 },
-    { id: 'renovation', icon: '🏠', name: language === 'en' ? 'Renovation' : 'Rénovation', count: 54 },
-    { id: 'landscaping', icon: '🌿', name: language === 'en' ? 'Landscaping' : 'Aménagement', count: 31 },
-    { id: 'moving', icon: '📦', name: language === 'en' ? 'Moving' : 'Déménagement', count: 28 },
+    { id: 'renovation', icon: '🏠', name: language === 'en' ? 'Renovation' : 'Renovation', count: 54 },
+    { id: 'landscaping', icon: '🌿', name: language === 'en' ? 'Landscaping' : 'Amenagement', count: 31 },
+    { id: 'moving', icon: '📦', name: language === 'en' ? 'Moving' : 'Demenagement', count: 28 },
     { id: 'auto', icon: '🚗', name: language === 'en' ? 'Auto Services' : 'Services Auto', count: 41 },
     { id: 'tech', icon: '💻', name: language === 'en' ? 'Tech Support' : 'Support Tech', count: 35 },
   ];
@@ -86,7 +91,7 @@ const HomePage = ({ language }) => {
     {
       id: 2,
       name: 'Elite Electric',
-      category: language === 'en' ? 'Electrical' : 'Électricité',
+      category: language === 'en' ? 'Electrical' : 'Electricite',
       rating: 4.8,
       reviews: 98,
       image: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400',
@@ -136,9 +141,12 @@ const HomePage = ({ language }) => {
                   className="w-full pl-12 pr-4 py-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              <button className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors">
+              <Link
+                to="/services"
+                className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors text-center"
+              >
                 {t.searchButton}
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -172,7 +180,7 @@ const HomePage = ({ language }) => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">{t.whyTitle}</h2>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl p-8 text-center shadow-sm">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -181,7 +189,7 @@ const HomePage = ({ language }) => {
               <h3 className="text-xl font-semibold mb-2">{t.whyVerified}</h3>
               <p className="text-gray-600">{t.whyVerifiedDesc}</p>
             </div>
-            
+
             <div className="bg-white rounded-xl p-8 text-center shadow-sm">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Clock className="text-green-600" size={32} />
@@ -189,7 +197,7 @@ const HomePage = ({ language }) => {
               <h3 className="text-xl font-semibold mb-2">{t.whyFast}</h3>
               <p className="text-gray-600">{t.whyFastDesc}</p>
             </div>
-            
+
             <div className="bg-white rounded-xl p-8 text-center shadow-sm">
               <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <ThumbsUp className="text-yellow-600" size={32} />
@@ -218,14 +226,14 @@ const HomePage = ({ language }) => {
             {featuredProviders.map((provider) => (
               <div key={provider.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="h-48 bg-gray-200 relative">
-                  <img 
-                    src={provider.image} 
+                  <img
+                    src={provider.image}
                     alt={provider.name}
                     className="w-full h-full object-cover"
                   />
                   {provider.verified && (
                     <span className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center">
-                      <Shield size={12} className="mr-1" /> {language === 'en' ? 'Verified' : 'Vérifié'}
+                      <Shield size={12} className="mr-1" /> {language === 'en' ? 'Verified' : 'Verifie'}
                     </span>
                   )}
                 </div>
@@ -237,6 +245,12 @@ const HomePage = ({ language }) => {
                     <span className="ml-1 font-medium">{provider.rating}</span>
                     <span className="text-gray-400 text-sm ml-1">({provider.reviews} {language === 'en' ? 'reviews' : 'avis'})</span>
                   </div>
+                  <Link
+                    to={`/providers/${provider.id}/book`}
+                    className="mt-4 block w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center"
+                  >
+                    {t.bookNow}
+                  </Link>
                 </div>
               </div>
             ))}
@@ -249,11 +263,22 @@ const HomePage = ({ language }) => {
         <div className="max-w-4xl mx-auto px-4 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">{t.ctaTitle}</h2>
           <p className="text-xl text-green-100 mb-8">{t.ctaSubtitle}</p>
-          <button className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors">
+          <button
+            type="button"
+            onClick={() => setShowAuthModal(true)}
+            className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors"
+          >
             {t.ctaButton}
           </button>
         </div>
       </section>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        initialMode="choose-role"
+      />
     </div>
   );
 };
