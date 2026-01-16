@@ -16,6 +16,8 @@ const Header = ({ language, toggleLanguage }) => {
       search: 'Search services...',
       location: 'Laval, QC',
       slogan: 'Near To You',
+      signIn: 'Sign In',
+      joinFree: 'Join Free',
     },
     fr: {
       home: 'Accueil',
@@ -26,6 +28,8 @@ const Header = ({ language, toggleLanguage }) => {
       search: 'Rechercher des services...',
       location: 'Laval, QC',
       slogan: 'À côté de toi',
+      signIn: 'Se connecter',
+      joinFree: 'Inscription',
     }
   };
 
@@ -102,6 +106,22 @@ const Header = ({ language, toggleLanguage }) => {
             ))}
           </nav>
 
+          {/* Auth buttons - desktop */}
+          <div className="hidden md:flex items-center space-x-4 ml-6">
+            <Link
+              to="/signin"
+              className="text-gray-600 hover:text-gray-800 font-medium transition-colors"
+            >
+              {t.signIn}
+            </Link>
+            <Link
+              to="/join"
+              className="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-lg transition-colors"
+            >
+              {t.joinFree}
+            </Link>
+          </div>
+
           {/* Mobile menu button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -140,6 +160,23 @@ const Header = ({ language, toggleLanguage }) => {
                 {link.label}
               </Link>
             ))}
+            {/* Auth buttons - mobile */}
+            <div className="pt-2 border-t border-gray-200 mt-2 space-y-2">
+              <Link
+                to="/signin"
+                onClick={() => setIsMenuOpen(false)}
+                className="block py-2 px-3 rounded-lg text-gray-600 hover:bg-gray-50"
+              >
+                {t.signIn}
+              </Link>
+              <Link
+                to="/join"
+                onClick={() => setIsMenuOpen(false)}
+                className="block py-2 px-3 rounded-lg bg-red-500 hover:bg-red-600 text-white text-center"
+              >
+                {t.joinFree}
+              </Link>
+            </div>
           </nav>
         </div>
       )}
