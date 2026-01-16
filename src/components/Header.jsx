@@ -25,7 +25,7 @@ const Header = ({ language, toggleLanguage }) => {
       contact: 'Contact',
       search: 'Rechercher des services...',
       location: 'Laval, QC',
-      slogan: 'À côté de toi',
+      slogan: 'Près de toi',
     }
   };
 

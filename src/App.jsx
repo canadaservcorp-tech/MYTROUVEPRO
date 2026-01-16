@@ -39,7 +39,7 @@ function App() {
     },
     fr: {
       title: 'myTROUVEpro',
-      slogan: 'À côté de toi',
+      slogan: 'Près de toi',
       description: 'Trouvez des fournisseurs de services locaux de confiance',
       services: 'Nos Services',
       plumbing: 'Plomberie',
