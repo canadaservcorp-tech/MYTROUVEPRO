@@ -37,6 +37,7 @@ const ServicesPage = ({ language }) => {
 
   const categories = [
     { id: 'all', name: t.allCategories, icon: '📋' },
+    { id: 'medical', name: language === 'en' ? 'Medical & Healthcare' : 'Médical & Santé', icon: '🏥' },
     { id: 'plumbing', name: language === 'en' ? 'Plumbing' : 'Plomberie', icon: '🔧' },
     { id: 'electrical', name: language === 'en' ? 'Electrical' : 'Électricité', icon: '⚡' },
     { id: 'cleaning', name: language === 'en' ? 'Cleaning' : 'Nettoyage', icon: '🧹' },
@@ -48,6 +49,51 @@ const ServicesPage = ({ language }) => {
   ];
 
   const providers = [
+    {
+      id: 7,
+      name: 'Clinique Santé Plus',
+      category: 'medical',
+      categoryName: language === 'en' ? 'Medical & Healthcare' : 'Médical & Santé',
+      rating: 4.9,
+      reviews: 312,
+      location: 'Laval, QC',
+      responseTime: 1,
+      image: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=400',
+      verified: true,
+      description: language === 'en'
+        ? 'Full-service medical clinic with family doctors and specialists.'
+        : 'Clinique médicale complète avec médecins de famille et spécialistes.',
+    },
+    {
+      id: 8,
+      name: 'PhysioBalance',
+      category: 'medical',
+      categoryName: language === 'en' ? 'Medical & Healthcare' : 'Médical & Santé',
+      rating: 4.8,
+      reviews: 189,
+      location: 'Montreal, QC',
+      responseTime: 2,
+      image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400',
+      verified: true,
+      description: language === 'en'
+        ? 'Professional physiotherapy and rehabilitation services.'
+        : 'Services professionnels de physiothérapie et réhabilitation.',
+    },
+    {
+      id: 9,
+      name: 'Dental Care Laval',
+      category: 'medical',
+      categoryName: language === 'en' ? 'Medical & Healthcare' : 'Médical & Santé',
+      rating: 4.7,
+      reviews: 245,
+      location: 'Laval, QC',
+      responseTime: 1,
+      image: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=400',
+      verified: true,
+      description: language === 'en'
+        ? 'Complete dental care for the whole family.'
+        : 'Soins dentaires complets pour toute la famille.',
+    },
     {
       id: 1,
       name: 'ProPlumb Solutions',

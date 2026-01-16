@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Star, ArrowRight, Shield, Clock, ThumbsUp } from 'lucide-react';
+import AuthModal from '../components/AuthModal';
 
 const HomePage = ({ language }) => {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState('choose-role');
+
+  const openProviderSignup = () => {
+    setAuthMode('choose-role');
+    setShowAuthModal(true);
+  };
+
   const content = {
     en: {
       heroTitle: 'Find Trusted Service Providers',
@@ -63,6 +72,7 @@ const HomePage = ({ language }) => {
   const t = content[language];
 
   const categories = [
+    { id: 'medical', icon: '🏥', name: language === 'en' ? 'Medical & Healthcare' : 'Médical & Santé', count: 52 },
     { id: 'plumbing', icon: '🔧', name: language === 'en' ? 'Plumbing' : 'Plomberie', count: 45 },
     { id: 'electrical', icon: '⚡', name: language === 'en' ? 'Electrical' : 'Électricité', count: 38 },
     { id: 'cleaning', icon: '🧹', name: language === 'en' ? 'Cleaning' : 'Nettoyage', count: 62 },
@@ -249,11 +259,21 @@ const HomePage = ({ language }) => {
         <div className="max-w-4xl mx-auto px-4 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">{t.ctaTitle}</h2>
           <p className="text-xl text-green-100 mb-8">{t.ctaSubtitle}</p>
-          <button className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors">
+          <button
+            onClick={openProviderSignup}
+            className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors"
+          >
             {t.ctaButton}
           </button>
         </div>
       </section>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        initialMode={authMode}
+      />
     </div>
   );
 };
