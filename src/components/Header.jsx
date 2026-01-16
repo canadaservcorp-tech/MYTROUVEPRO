@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Search, MapPin, Globe } from 'lucide-react';
+import { Menu, X, Search, MapPin, Globe, User, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
-const Header = ({ language, toggleLanguage }) => {
+const Header = ({ language, toggleLanguage, onOpenAuthModal }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, isAuthenticated, logout, isProvider, isSeeker } = useAuth();
 
   const content = {
     en: {
@@ -16,6 +18,10 @@ const Header = ({ language, toggleLanguage }) => {
       search: 'Search services...',
       location: 'Laval, QC',
       slogan: 'Near To You',
+      signIn: 'Sign In',
+      joinFree: 'Join Free',
+      dashboard: 'Dashboard',
+      logout: 'Logout',
     },
     fr: {
       home: 'Accueil',
@@ -25,7 +31,11 @@ const Header = ({ language, toggleLanguage }) => {
       contact: 'Contact',
       search: 'Rechercher des services...',
       location: 'Laval, QC',
-      slogan: 'À côté de toi',
+      slogan: 'Près de toi',
+      signIn: 'Connexion',
+      joinFree: 'Inscription',
+      dashboard: 'Tableau de bord',
+      logout: 'Déconnexion',
     }
   };
 
@@ -102,6 +112,43 @@ const Header = ({ language, toggleLanguage }) => {
             ))}
           </nav>
 
+          {/* Auth Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to={isProvider ? '/dashboard' : '/my-dashboard'}
+                  className="text-gray-700 hover:text-blue-600 font-medium flex items-center"
+                >
+                  <User size={18} className="mr-1" />
+                  {t.dashboard}
+                </Link>
+                <button
+                  onClick={logout}
+                  className="text-gray-700 hover:text-blue-600 font-medium flex items-center"
+                >
+                  <LogOut size={18} className="mr-1" />
+                  {t.logout}
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => onOpenAuthModal && onOpenAuthModal('login')}
+                  className="text-gray-700 hover:text-blue-600 font-medium"
+                >
+                  {t.signIn}
+                </button>
+                <button
+                  onClick={() => onOpenAuthModal && onOpenAuthModal('choose-role')}
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors"
+                >
+                  {t.joinFree}
+                </button>
+              </>
+            )}
+          </div>
+
           {/* Mobile menu button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -140,6 +187,44 @@ const Header = ({ language, toggleLanguage }) => {
                 {link.label}
               </Link>
             ))}
+
+            {/* Mobile Auth Buttons */}
+            <div className="pt-4 border-t mt-4 space-y-2">
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to={isProvider ? '/dashboard' : '/my-dashboard'}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block py-2 px-3 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center"
+                  >
+                    <User size={18} className="mr-2" />
+                    {t.dashboard}
+                  </Link>
+                  <button
+                    onClick={() => { logout(); setIsMenuOpen(false); }}
+                    className="w-full text-left py-2 px-3 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center"
+                  >
+                    <LogOut size={18} className="mr-2" />
+                    {t.logout}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => { onOpenAuthModal && onOpenAuthModal('login'); setIsMenuOpen(false); }}
+                    className="w-full text-left py-2 px-3 rounded-lg text-gray-700 hover:bg-gray-50"
+                  >
+                    {t.signIn}
+                  </button>
+                  <button
+                    onClick={() => { onOpenAuthModal && onOpenAuthModal('choose-role'); setIsMenuOpen(false); }}
+                    className="w-full py-2 px-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold text-center"
+                  >
+                    {t.joinFree}
+                  </button>
+                </>
+              )}
+            </div>
           </nav>
         </div>
       )}

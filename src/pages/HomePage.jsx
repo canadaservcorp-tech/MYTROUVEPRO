@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Star, ArrowRight, Shield, Clock, ThumbsUp } from 'lucide-react';
 
-const HomePage = ({ language }) => {
+const HomePage = ({ language, onOpenAuthModal }) => {
   const content = {
     en: {
       heroTitle: 'Find Trusted Service Providers',
@@ -217,12 +217,23 @@ const HomePage = ({ language }) => {
           <div className="grid md:grid-cols-3 gap-6">
             {featuredProviders.map((provider) => (
               <div key={provider.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="h-48 bg-gray-200 relative">
-                  <img 
-                    src={provider.image} 
+                <div className="h-48 bg-gray-200 relative overflow-hidden">
+                  <img
+                    src={provider.image}
                     alt={provider.name}
                     className="w-full h-full object-cover"
+                    draggable="false"
+                    onContextMenu={(e) => e.preventDefault()}
                   />
+                  {/* Watermark overlay */}
+                  <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                    <span
+                      className="text-white/30 text-lg font-bold transform rotate-[-25deg] select-none"
+                      style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.3)', letterSpacing: '2px' }}
+                    >
+                      myTROUVEpro
+                    </span>
+                  </div>
                   {provider.verified && (
                     <span className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center">
                       <Shield size={12} className="mr-1" /> {language === 'en' ? 'Verified' : 'Vérifié'}
@@ -248,8 +259,14 @@ const HomePage = ({ language }) => {
       <section className="py-16 bg-gradient-to-r from-green-600 to-green-700">
         <div className="max-w-4xl mx-auto px-4 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">{t.ctaTitle}</h2>
-          <p className="text-xl text-green-100 mb-8">{t.ctaSubtitle}</p>
-          <button className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors">
+          <p className="text-xl text-green-100 mb-4">{t.ctaSubtitle}</p>
+          <p className="text-green-200 mb-8">
+            {language === 'en' ? 'FREE to join - Only 10% commission on bookings' : 'Inscription GRATUITE - Seulement 10% de commission sur les réservations'}
+          </p>
+          <button
+            onClick={() => onOpenAuthModal && onOpenAuthModal('choose-role')}
+            className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors"
+          >
             {t.ctaButton}
           </button>
         </div>
