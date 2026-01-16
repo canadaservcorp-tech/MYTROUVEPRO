@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Instagram, Linkedin } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const Footer = ({ language }) => {
   const content = {
@@ -53,9 +54,7 @@ const Footer = ({ language }) => {
           {/* Brand */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">mT</span>
-              </div>
+              <img src={logo} alt="myTROUVEpro" className="w-10 h-10 object-contain rounded-lg" />
               <div>
                 <span className="text-xl font-bold text-white">myTROUVE</span>
                 <span className="text-xl font-bold text-green-400">pro</span>

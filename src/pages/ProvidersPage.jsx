@@ -56,11 +56,15 @@ const ProvidersPage = ({ language }) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-blue-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-3xl font-bold mb-2">{t.title}</h1>
-          <p className="text-blue-200">{t.subtitle}</p>
+      {/* Hero Section */}
+      <div 
+        className="relative text-white py-12 bg-cover bg-center"
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1920&q=80")' }}
+      >
+        <div className="absolute inset-0 bg-blue-900 bg-opacity-80"></div>
+        <div className="relative max-w-7xl mx-auto px-4">
+          <h1 className="text-4xl font-bold mb-4">{t.title}</h1>
+          <p className="text-xl text-blue-100 max-w-2xl">{t.subtitle}</p>
         </div>
       </div>
 

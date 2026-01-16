@@ -106,8 +106,12 @@ const HomePage = ({ language }) => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 text-center">
+      <section 
+        className="relative text-white py-20 bg-cover bg-center"
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1581578731117-104f8a3d46a8?auto=format&fit=crop&w=1920&q=80")' }}
+      >
+        <div className="absolute inset-0 bg-blue-900 bg-opacity-80"></div>
+        <div className="relative max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
             {t.heroTitle}
             <br />
