@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Star, MapPin, Shield, Filter } from 'lucide-react';
+import { Search, Star, MapPin, Shield, Filter, Lock } from 'lucide-react';
 
 const ProvidersPage = ({ language }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,6 +18,7 @@ const ProvidersPage = ({ language }) => {
       verified: 'Verified',
       viewProfile: 'View Profile',
       reviews_count: 'reviews',
+      contactHidden: 'Contact info available after booking',
     },
     fr: {
       title: 'Tous les Fournisseurs',
@@ -30,6 +31,7 @@ const ProvidersPage = ({ language }) => {
       verified: 'Vérifié',
       viewProfile: 'Voir le Profil',
       reviews_count: 'avis',
+      contactHidden: 'Coordonnées disponibles après réservation',
     }
   };
 
@@ -94,12 +96,23 @@ const ProvidersPage = ({ language }) => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredProviders.map((provider) => (
             <div key={provider.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
-              <div className="h-48 bg-gray-200 relative">
-                <img 
-                  src={provider.image} 
+              <div className="h-48 bg-gray-200 relative overflow-hidden">
+                <img
+                  src={provider.image}
                   alt={provider.name}
                   className="w-full h-full object-cover"
+                  draggable="false"
+                  onContextMenu={(e) => e.preventDefault()}
                 />
+                {/* Watermark overlay */}
+                <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <span
+                    className="text-white/30 text-lg font-bold transform rotate-[-25deg] select-none"
+                    style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.3)', letterSpacing: '2px' }}
+                  >
+                    myTROUVEpro
+                  </span>
+                </div>
                 {provider.verified && (
                   <span className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center">
                     <Shield size={12} className="mr-1" /> {t.verified}
@@ -118,9 +131,14 @@ const ProvidersPage = ({ language }) => {
                   <MapPin size={14} className="mr-1" />
                   {provider.location}
                 </div>
+                {/* Contact info hidden notice */}
+                <div className="mt-3 flex items-center text-xs text-gray-400">
+                  <Lock size={12} className="mr-1" />
+                  {t.contactHidden}
+                </div>
                 <Link
                   to={`/providers/${provider.id}`}
-                  className="mt-4 block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-colors"
+                  className="mt-3 block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-colors"
                 >
                   {t.viewProfile}
                 </Link>
