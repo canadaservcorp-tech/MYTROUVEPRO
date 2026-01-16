@@ -28,7 +28,12 @@ const Header = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center space-x-2">
+              <img
+                src="/logo.png"
+                alt="myTROUVEpro"
+                className="w-10 h-10 rounded-lg"
+              />
               <span className="text-2xl font-bold">
                 <span className="text-gray-900">my</span>
                 <span className="text-red-600">TROUVE</span>

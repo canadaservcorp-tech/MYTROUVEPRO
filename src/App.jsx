@@ -100,9 +100,11 @@ function App() {
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">mT</span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="myTROUVEpro"
+              className="w-10 h-10 rounded-lg"
+            />
             <div>
               <span className="text-xl font-bold text-blue-900">myTROUVE</span>
               <span className="text-xl font-bold text-green-500">pro</span>
@@ -117,8 +119,16 @@ function App() {
       </header>
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 text-center">
+      <section
+        className="relative text-white py-20"
+        style={{
+          backgroundImage: 'url(/hero-bg.svg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900/80 via-gray-800/70 to-gray-900/80"></div>
+        <div className="relative max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {t.description.split(' ').slice(0, 3).join(' ')}
             <br />
@@ -198,9 +208,11 @@ function App() {
       <footer id="contact" className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">mT</span>
-            </div>
+            <img
+              src="/logo.png"
+              alt="myTROUVEpro"
+              className="w-10 h-10 rounded-lg"
+            />
             <div>
               <span className="text-xl font-bold">myTROUVE</span>
               <span className="text-xl font-bold text-green-400">pro</span>
