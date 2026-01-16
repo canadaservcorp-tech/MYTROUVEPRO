@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Star, ArrowRight, Shield, Clock, ThumbsUp } from 'lucide-react';
 
-const HomePage = ({ language }) => {
+const HomePage = ({ language, openSignup }) => {
   const content = {
     en: {
       heroTitle: 'Find Trusted Service Providers',
@@ -249,7 +249,10 @@ const HomePage = ({ language }) => {
         <div className="max-w-4xl mx-auto px-4 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">{t.ctaTitle}</h2>
           <p className="text-xl text-green-100 mb-8">{t.ctaSubtitle}</p>
-          <button className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors">
+          <button 
+            onClick={openSignup}
+            className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold hover:bg-green-50 transition-colors"
+          >
             {t.ctaButton}
           </button>
         </div>
