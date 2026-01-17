@@ -104,7 +104,7 @@ curl https://your-app.up.railway.app/api/config
 
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_anon_key
-VITE_BACKEND_URL=https://your-app.up.railway.app
+VITE_BACKEND_URL=https://your-app.up.railway.app  # Required for payment processing
 VITE_SQUARE_APPLICATION_ID=sq0idp-xxxxxxxx
 VITE_SQUARE_LOCATION_ID=Lxxxxxxxx
 VITE_SQUARE_ENVIRONMENT=sandbox
@@ -208,6 +208,7 @@ import { categories, getCategoryName } from '../data/categories';
 - [ ] Enable HTTPS only
 - [ ] Set ADMIN_API_KEY for admin endpoints
 - [ ] Add CSP headers
+- [ ] Verify CSP allows Square + Supabase traffic
 
 ### 5.2 Switch to Production Square
 

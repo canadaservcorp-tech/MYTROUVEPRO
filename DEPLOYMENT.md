@@ -54,7 +54,7 @@ CORS_ALLOWED_ORIGINS=https://mytrouvepro11.netlify.app,https://mytrouvepro.com
 
 In your Netlify environment variables:
 ```
-VITE_BACKEND_URL=https://your-railway-url.up.railway.app
+VITE_BACKEND_URL=https://your-railway-url.up.railway.app  # Required for payment processing
 ```
 
 ### Step 4: Test Backend
