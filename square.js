@@ -1,13 +1,22 @@
 // Square Payment Configuration
-// Sandbox credentials for testing
+const squareEnvironment = (import.meta.env.VITE_SQUARE_ENVIRONMENT || 'sandbox').toLowerCase();
+const isProduction = squareEnvironment === 'production';
+const applicationId = import.meta.env.VITE_SQUARE_APPLICATION_ID || '';
+const locationId = import.meta.env.VITE_SQUARE_LOCATION_ID || '';
+
+if (!applicationId || !locationId) {
+  console.warn('Square configuration missing. Set VITE_SQUARE_APPLICATION_ID and VITE_SQUARE_LOCATION_ID.');
+}
+
 export const SQUARE_CONFIG = {
-  applicationId: 'sandbox-sq0idb-Z6g4W5yCPznRerTcgUTLBQ',
-  locationId: 'LGKWFNKR77SCA',
+  applicationId,
+  locationId,
   // Note: Access token should be used server-side only for security
   // For client-side, we only need applicationId and locationId
-  environment: 'sandbox', // Change to 'production' for live
+  environment: squareEnvironment
 };
 
 // Square Web Payments SDK URL
-export const SQUARE_SDK_URL = 'https://sandbox.web.squarecdn.com/v1/square.js';
-// For production: 'https://web.squarecdn.com/v1/square.js'
+export const SQUARE_SDK_URL = isProduction
+  ? 'https://web.squarecdn.com/v1/square.js'
+  : 'https://sandbox.web.squarecdn.com/v1/square.js';

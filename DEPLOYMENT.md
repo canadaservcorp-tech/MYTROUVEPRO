@@ -15,9 +15,12 @@ SQUARE_ENVIRONMENT=sandbox
 # Server
 PORT=3001
 NODE_ENV=production
+ADMIN_API_KEY=your_strong_admin_key
+MAX_PAYMENT_AMOUNT_CAD=10000
+ENFORCE_HTTPS=true
 
 # CORS Origins
-FRONTEND_URL=https://mytrouvepro11.netlify.app
+CORS_ALLOWED_ORIGINS=https://mytrouvepro11.netlify.app,https://mytrouvepro.com
 ```
 
 ### Step 2: Deploy to Railway
@@ -61,7 +64,7 @@ VITE_BACKEND_URL=https://your-railway-url.up.railway.app
 curl https://your-railway-url.up.railway.app/
 
 # Test Square connection
-curl https://your-railway-url.up.railway.app/api/test
+curl -H "x-api-key: your_strong_admin_key" https://your-railway-url.up.railway.app/api/test
 
 # Test config
 curl https://your-railway-url.up.railway.app/api/config
@@ -122,7 +125,10 @@ If you have a custom domain:
 - [ ] SQUARE_LOCATION_ID
 - [ ] SQUARE_ENVIRONMENT (sandbox or production)
 - [ ] PORT (usually 3001)
-- [ ] FRONTEND_URL (your Netlify URL)
+- [ ] ADMIN_API_KEY (keep secret)
+- [ ] MAX_PAYMENT_AMOUNT_CAD
+- [ ] ENFORCE_HTTPS (true in production)
+- [ ] CORS_ALLOWED_ORIGINS (comma-separated)
 
 ---
 
@@ -138,7 +144,7 @@ After deployment, verify:
 
 2. **Square Connection:**
    ```bash
-   curl https://your-backend-url/api/test
+   curl -H "x-api-key: your_strong_admin_key" https://your-backend-url/api/test
    ```
    Should return: `{"success":true,"location":{...}}`
 

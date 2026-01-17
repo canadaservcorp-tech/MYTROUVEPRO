@@ -107,7 +107,6 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
       if (result.status === 'OK') {
         // In production, send this token to your backend
         // For demo, we'll simulate a successful payment
-        console.log('Payment token:', result.token);
         
         // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 1500));
