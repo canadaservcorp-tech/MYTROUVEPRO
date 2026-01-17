@@ -15,6 +15,7 @@ import ContactPage from '../ContactPage';
 import ProfilePage from '../ProfilePage';
 import ProviderDashboard from '../ProviderDashboard';
 import SeekerDashboard from '../SeekerDashboard';
+import AddServicePage from './pages/AddServicePage';
 
 function App() {
   const [language, setLanguage] = useState('en');
@@ -46,6 +47,7 @@ function App() {
                 <Route path="/contact" element={<ContactPage language={language} />} />
                 <Route path="/profile" element={<ProfilePage language={language} />} />
                 <Route path="/provider/dashboard" element={<ProviderDashboard language={language} />} />
+                <Route path="/my-services/add" element={<AddServicePage language={language} />} />
                 <Route path="/seeker/dashboard" element={<SeekerDashboard language={language} />} />
                 <Route path="*" element={<HomePage language={language} />} />
               </Routes>
