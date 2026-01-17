@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useCart } from '../context/CartContext';
-import SquarePayment from '../components/SquarePayment';
+import { useCart } from './CartContext';
+import SquarePayment from './SquarePayment';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, ShoppingCart, User, Mail, Phone, MapPin, Calendar, Clock } from 'lucide-react';
 

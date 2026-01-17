@@ -106,37 +106,47 @@ const HomePage = ({ language }) => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+      <section className="relative text-white py-24 overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" 
+            alt="Background" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-900/80 to-blue-800/90 backdrop-blur-[2px]"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight">
             {t.heroTitle}
             <br />
-            <span className="text-green-400">{t.heroHighlight}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300 drop-shadow-sm">{t.heroHighlight}</span>
           </h1>
-          <p className="text-xl text-blue-200 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
             {t.heroSubtitle}
           </p>
 
           {/* Search Box */}
-          <div className="max-w-3xl mx-auto bg-white rounded-xl p-2 shadow-2xl">
+          <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-2 shadow-2xl border border-white/20">
             <div className="flex flex-col md:flex-row gap-2">
               <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-200" size={20} />
                 <input
                   type="text"
                   placeholder={t.searchPlaceholder}
-                  className="w-full pl-12 pr-4 py-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl bg-white/90 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all"
                 />
               </div>
               <div className="relative md:w-48">
-                <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-200" size={20} />
                 <input
                   type="text"
                   placeholder={t.locationPlaceholder}
-                  className="w-full pl-12 pr-4 py-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl bg-white/90 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all"
                 />
               </div>
-              <button className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors">
+              <button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg transition-all transform hover:scale-[1.02]">
                 {t.searchButton}
               </button>
             </div>

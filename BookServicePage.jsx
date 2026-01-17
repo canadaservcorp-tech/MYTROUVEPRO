@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import { useCart } from './CartContext';
 import { ArrowLeft, Star, Shield, Clock, MapPin, Plus, Check, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
