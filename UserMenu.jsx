@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { User, LogOut, Settings, Briefcase, Calendar, Heart, ChevronDown } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './AuthContext-Supabase';
 
 const UserMenu = () => {
   const { user, logout, isProvider } = useAuth();

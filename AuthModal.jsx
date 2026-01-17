@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Phone, MapPin, Eye, EyeOff, Briefcase, Users } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './AuthContext-Supabase';
 
 const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const { login, register } = useAuth();

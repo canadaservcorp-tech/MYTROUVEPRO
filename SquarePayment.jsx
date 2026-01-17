@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { SQUARE_CONFIG, SQUARE_SDK_URL } from '../config/square';
-import { useCart } from '../context/CartContext';
+import { SQUARE_CONFIG, SQUARE_SDK_URL } from './square';
+import { useCart } from './CartContext';
 import { CreditCard, Lock, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 
 const SquarePayment = ({ language, onSuccess, onError }) => {
