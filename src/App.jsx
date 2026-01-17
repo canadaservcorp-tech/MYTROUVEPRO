@@ -2,19 +2,19 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '../AuthContext-Supabase';
 import { CartProvider } from '../CartContext';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Cart from './components/Cart';
-import HomePage from './pages/HomePage';
-import ServicesPage from './pages/ServicesPage';
-import ProvidersPage from './pages/ProvidersPage';
-import BookServicePage from './pages/BookServicePage';
-import CheckoutPage from './pages/CheckoutPage';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
-import ProfilePage from './pages/ProfilePage';
-import ProviderDashboard from './pages/ProviderDashboard';
-import SeekerDashboard from './pages/SeekerDashboard';
+import Header from '../Header';
+import Footer from '../Footer';
+import Cart from '../Cart';
+import HomePage from '../HomePage';
+import ServicesPage from '../ServicesPage';
+import ProvidersPage from '../ProvidersPage';
+import BookServicePage from '../BookServicePage';
+import CheckoutPage from '../CheckoutPage';
+import AboutPage from '../AboutPage';
+import ContactPage from '../ContactPage';
+import ProfilePage from '../ProfilePage';
+import ProviderDashboard from '../ProviderDashboard';
+import SeekerDashboard from '../SeekerDashboard';
 
 function App() {
   const [language, setLanguage] = useState('en');
