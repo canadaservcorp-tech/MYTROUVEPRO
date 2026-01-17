@@ -12,7 +12,6 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   email VARCHAR(255) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
   role VARCHAR(20) NOT NULL CHECK (role IN ('provider', 'seeker')),
   
   -- Profile info
@@ -347,5 +346,5 @@ USING (auth.uid() = sender_id OR auth.uid() = receiver_id);
 -- SAMPLE DATA (for testing)
 -- ============================================
 -- Add sample provider
-INSERT INTO users (email, password_hash, role, first_name, last_name, city, verified, profile_complete)
-VALUES ('demo@mytrouvepro.com', '$2a$10$samplehash', 'provider', 'Demo', 'Provider', 'Laval', true, true);
+INSERT INTO users (email, role, first_name, last_name, city, verified, profile_complete)
+VALUES ('demo@mytrouvepro.com', 'provider', 'Demo', 'Provider', 'Laval', true, true);

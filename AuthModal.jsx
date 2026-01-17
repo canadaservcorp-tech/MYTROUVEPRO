@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Phone, MapPin, Eye, EyeOff, Briefcase, Users } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './AuthContext-Supabase';
 
-const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
+const AuthModal = ({ isOpen, onClose, initialMode = 'login', language = 'en' }) => {
   const { login, register } = useAuth();
   const [mode, setMode] = useState(initialMode); // 'login', 'register', 'choose-role'
   const [role, setRole] = useState(null); // 'seeker' or 'provider'
@@ -10,29 +10,94 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    city: 'Laval',
-    // Provider-specific
-    businessName: '',
-    category: '',
-    description: '',
-  });
+  const content = {
+    en: {
+      signIn: 'Sign In',
+      join: 'Join myTROUVEpro',
+      providerReg: 'Provider Registration',
+      createAccount: 'Create Account',
+      howToUse: 'How do you want to use myTROUVEpro?',
+      lookingFor: 'I\'m looking for services',
+      findAndBook: 'Find and book local service providers',
+      alwaysFree: 'Always FREE',
+      imProvider: 'I\'m a service provider',
+      listServices: 'List your services and get new clients',
+      freeToJoin: 'FREE to join • 10% per booking',
+      alreadyHave: 'Already have an account?',
+      dontHave: 'Don\'t have an account?',
+      signUp: 'Sign Up',
+      email: 'Email',
+      password: 'Password',
+      confirmPassword: 'Confirm Password',
+      signingIn: 'Signing in...',
+      creating: 'Creating account...',
+      firstName: 'First Name',
+      lastName: 'Last Name',
+      phone: 'Phone',
+      city: 'City',
+      businessName: 'Business Name',
+      category: 'Service Category',
+      selectCategory: 'Select a category',
+      description: 'Description',
+      tellCustomers: 'Tell customers about your services...',
+      terms: 'By signing up, you agree to our',
+      tos: 'Terms of Service',
+      commission: 'and 10% commission on all bookings',
+      back: '← Back to role selection',
+      joinAsProvider: 'Join as Provider',
+      freeJoinDesc: 'FREE to join!',
+      commissionDesc: 'Only 10% commission on bookings',
+    },
+    fr: {
+      signIn: 'Connexion',
+      join: 'Rejoindre myTROUVEpro',
+      providerReg: 'Inscription Fournisseur',
+      createAccount: 'Créer un compte',
+      howToUse: 'Comment voulez-vous utiliser myTROUVEpro ?',
+      lookingFor: 'Je cherche des services',
+      findAndBook: 'Trouvez et réservez des fournisseurs locaux',
+      alwaysFree: 'Toujours GRATUIT',
+      imProvider: 'Je suis un fournisseur',
+      listServices: 'Listez vos services et trouvez des clients',
+      freeToJoin: 'GRATUIT • 10% par réservation',
+      alreadyHave: 'Déjà un compte ?',
+      dontHave: 'Pas de compte ?',
+      signUp: 'S\'inscrire',
+      email: 'Courriel',
+      password: 'Mot de passe',
+      confirmPassword: 'Confirmer le mot de passe',
+      signingIn: 'Connexion...',
+      creating: 'Création du compte...',
+      firstName: 'Prénom',
+      lastName: 'Nom',
+      phone: 'Téléphone',
+      city: 'Ville',
+      businessName: 'Nom de l\'entreprise',
+      category: 'Catégorie de service',
+      selectCategory: 'Sélectionnez une catégorie',
+      description: 'Description',
+      tellCustomers: 'Parlez de vos services aux clients...',
+      terms: 'En vous inscrivant, vous acceptez nos',
+      tos: 'Conditions d\'utilisation',
+      commission: 'et 10% de commission sur les réservations',
+      back: '← Retour à la sélection du rôle',
+      joinAsProvider: 'Devenir Fournisseur',
+      freeJoinDesc: 'GRATUIT pour s\'inscrire !',
+      commissionDesc: 'Seulement 10% de commission',
+    }
+  };
+
+  const t = content[language || 'en'];
 
   const categories = [
-    { id: 'healthcare', name: 'Healthcare', nameFr: 'Santé' },
-    { id: 'home', name: 'Home Services', nameFr: 'Services à domicile' },
-    { id: 'auto', name: 'Auto Services', nameFr: 'Services auto' },
-    { id: 'beauty', name: 'Beauty & Wellness', nameFr: 'Beauté & Bien-être' },
-    { id: 'education', name: 'Education', nameFr: 'Éducation' },
-    { id: 'legal', name: 'Legal', nameFr: 'Juridique' },
-    { id: 'tech', name: 'Tech & IT', nameFr: 'Tech & TI' },
-    { id: 'repairs', name: 'Repairs', nameFr: 'Réparations' },
+    { id: 'healthcare', name: language === 'en' ? 'Healthcare' : 'Santé' },
+    { id: 'home', name: language === 'en' ? 'Home Services' : 'Services à domicile' },
+    { id: 'auto', name: language === 'en' ? 'Auto Services' : 'Services auto' },
+    { id: 'beauty', name: language === 'en' ? 'Beauty & Wellness' : 'Beauté & Bien-être' },
+    { id: 'education', name: language === 'en' ? 'Education' : 'Éducation' },
+    { id: 'legal', name: language === 'en' ? 'Legal' : 'Juridique' },
+    { id: 'tech', name: language === 'en' ? 'Tech & IT' : 'Tech & TI' },
+    { id: 'repairs', name: language === 'en' ? 'Repairs' : 'Réparations' },
   ];
 
   const handleChange = (e) => {
@@ -62,13 +127,13 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError(language === 'en' ? 'Passwords do not match' : 'Les mots de passe ne correspondent pas');
       setLoading(false);
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(language === 'en' ? 'Password must be at least 6 characters' : 'Le mot de passe doit faire au moins 6 caractères');
       setLoading(false);
       return;
     }
@@ -81,7 +146,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     if (result.success) {
       onClose();
     } else {
-      setError(result.error || 'Registration failed');
+      setError(result.error || (language === 'en' ? 'Registration failed' : 'L\'inscription a échoué'));
     }
     setLoading(false);
   };
@@ -107,9 +172,9 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b">
             <h2 className="text-2xl font-bold text-gray-900">
-              {mode === 'login' && 'Sign In'}
-              {mode === 'choose-role' && 'Join myTROUVEpro'}
-              {mode === 'register' && (role === 'provider' ? 'Provider Registration' : 'Create Account')}
+              {mode === 'login' && t.signIn}
+              {mode === 'choose-role' && t.join}
+              {mode === 'register' && (role === 'provider' ? t.providerReg : t.createAccount)}
             </h2>
             <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
               <X size={24} />
@@ -128,7 +193,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             {mode === 'choose-role' && (
               <div className="space-y-4">
                 <p className="text-gray-600 text-center mb-6">
-                  How do you want to use myTROUVEpro?
+                  {t.howToUse}
                 </p>
 
                 {/* Seeker Option */}
@@ -141,9 +206,9 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                       <Users className="text-blue-600 group-hover:text-red-600" size={28} />
                     </div>
                     <div className="ml-4">
-                      <h3 className="text-lg font-semibold text-gray-900">I'm looking for services</h3>
-                      <p className="text-gray-500 text-sm">Find and book local service providers</p>
-                      <span className="text-green-600 text-sm font-medium">Always FREE</span>
+                      <h3 className="text-lg font-semibold text-gray-900">{t.lookingFor}</h3>
+                      <p className="text-gray-500 text-sm">{t.findAndBook}</p>
+                      <span className="text-green-600 text-sm font-medium">{t.alwaysFree}</span>
                     </div>
                   </div>
                 </button>
@@ -158,20 +223,20 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                       <Briefcase className="text-green-600 group-hover:text-red-600" size={28} />
                     </div>
                     <div className="ml-4">
-                      <h3 className="text-lg font-semibold text-gray-900">I'm a service provider</h3>
-                      <p className="text-gray-500 text-sm">List your services and get new clients</p>
-                      <span className="text-green-600 text-sm font-medium">FREE to join • 10% per booking</span>
+                      <h3 className="text-lg font-semibold text-gray-900">{t.imProvider}</h3>
+                      <p className="text-gray-500 text-sm">{t.listServices}</p>
+                      <span className="text-green-600 text-sm font-medium">{t.freeToJoin}</span>
                     </div>
                   </div>
                 </button>
 
                 <div className="text-center pt-4">
-                  <span className="text-gray-500">Already have an account? </span>
+                  <span className="text-gray-500">{t.alreadyHave} </span>
                   <button 
                     onClick={() => setMode('login')}
                     className="text-red-600 font-semibold hover:underline"
                   >
-                    Sign In
+                    {t.signIn}
                   </button>
                 </div>
               </div>
@@ -181,7 +246,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             {mode === 'login' && (
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.email}</label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -197,7 +262,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.password}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -224,17 +289,17 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   disabled={loading}
                   className="w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 disabled:bg-gray-400 transition-colors"
                 >
-                  {loading ? 'Signing in...' : 'Sign In'}
+                  {loading ? t.signingIn : t.signIn}
                 </button>
 
                 <div className="text-center pt-2">
-                  <span className="text-gray-500">Don't have an account? </span>
+                  <span className="text-gray-500">{t.dontHave} </span>
                   <button 
                     type="button"
                     onClick={() => setMode('choose-role')}
                     className="text-red-600 font-semibold hover:underline"
                   >
-                    Sign Up
+                    {t.signUp}
                   </button>
                 </div>
               </form>
@@ -249,8 +314,8 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     <div className="flex items-center">
                       <span className="text-2xl mr-2">🎉</span>
                       <div>
-                        <p className="font-semibold text-green-800">FREE to join!</p>
-                        <p className="text-sm text-green-600">Only 10% commission on bookings</p>
+                        <p className="font-semibold text-green-800">{t.freeJoinDesc}</p>
+                        <p className="text-sm text-green-600">{t.commissionDesc}</p>
                       </div>
                     </div>
                   </div>
@@ -258,7 +323,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t.firstName}</label>
                     <input
                       type="text"
                       name="firstName"
@@ -270,7 +335,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t.lastName}</label>
                     <input
                       type="text"
                       name="lastName"
@@ -284,7 +349,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.email}</label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -300,7 +365,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.phone}</label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -316,7 +381,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.city}</label>
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -335,7 +400,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 {role === 'provider' && (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">{t.businessName}</label>
                       <div className="relative">
                         <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                         <input
@@ -351,7 +416,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Service Category</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">{t.category}</label>
                       <select
                         name="category"
                         value={formData.category}
@@ -359,7 +424,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                         required
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
                       >
-                        <option value="">Select a category</option>
+                        <option value="">{t.selectCategory}</option>
                         {categories.map(cat => (
                           <option key={cat.id} value={cat.id}>{cat.name}</option>
                         ))}
@@ -367,21 +432,21 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">{t.description}</label>
                       <textarea
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
                         rows={3}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                        placeholder="Tell customers about your services..."
+                        placeholder={t.tellCustomers}
                       />
                     </div>
                   </>
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.password}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -404,7 +469,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.confirmPassword}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -421,10 +486,10 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
                 {/* Terms */}
                 <div className="text-sm text-gray-500">
-                  By signing up, you agree to our{' '}
-                  <a href="/terms" className="text-red-600 hover:underline">Terms of Service</a>
+                  {t.terms}{' '}
+                  <a href="/terms" className="text-red-600 hover:underline">{t.tos}</a>
                   {role === 'provider' && (
-                    <span> and <span className="font-medium">10% commission on all bookings</span></span>
+                    <span> {t.commission}</span>
                   )}
                 </div>
 
@@ -433,7 +498,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   disabled={loading}
                   className="w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 disabled:bg-gray-400 transition-colors"
                 >
-                  {loading ? 'Creating account...' : (role === 'provider' ? 'Join as Provider' : 'Create Account')}
+                  {loading ? t.creating : (role === 'provider' ? t.joinAsProvider : t.createAccount)}
                 </button>
 
                 <div className="text-center pt-2">
@@ -442,7 +507,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     onClick={() => { setMode('choose-role'); setRole(null); }}
                     className="text-gray-500 hover:text-gray-700"
                   >
-                    ← Back to role selection
+                    {t.back}
                   </button>
                 </div>
               </form>
