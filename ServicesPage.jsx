@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Search, Filter, Star, MapPin, Shield, Clock } from 'lucide-react';
+import { categories as allCategories, getCategoryName } from '../data/categories';
 
 const ServicesPage = ({ language }) => {
   const { category } = useParams();
@@ -35,17 +36,12 @@ const ServicesPage = ({ language }) => {
 
   const t = content[language];
 
-  const categories = [
-    { id: 'all', name: t.allCategories, icon: '📋' },
-    { id: 'plumbing', name: language === 'en' ? 'Plumbing' : 'Plomberie', icon: '🔧' },
-    { id: 'electrical', name: language === 'en' ? 'Electrical' : 'Électricité', icon: '⚡' },
-    { id: 'cleaning', name: language === 'en' ? 'Cleaning' : 'Nettoyage', icon: '🧹' },
-    { id: 'renovation', name: language === 'en' ? 'Renovation' : 'Rénovation', icon: '🏠' },
-    { id: 'landscaping', name: language === 'en' ? 'Landscaping' : 'Aménagement', icon: '🌿' },
-    { id: 'moving', name: language === 'en' ? 'Moving' : 'Déménagement', icon: '📦' },
-    { id: 'auto', name: language === 'en' ? 'Auto Services' : 'Services Auto', icon: '🚗' },
-    { id: 'tech', name: language === 'en' ? 'Tech Support' : 'Support Tech', icon: '💻' },
-  ];
+  // Use imported categories
+  const categories = allCategories.map(cat => ({
+    id: cat.id,
+    name: getCategoryName(cat, language),
+    icon: cat.icon
+  }));
 
   const providers = [
     {
