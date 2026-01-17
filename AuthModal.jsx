@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Phone, MapPin, Eye, EyeOff, Briefcase, Users } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './AuthContext-Supabase';
+import { categories as allCategories } from './categories';
 
-const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
+const AuthModal = ({ isOpen, onClose, initialMode = 'login', language = 'en' }) => {
   const { login, register } = useAuth();
   const [mode, setMode] = useState(initialMode); // 'login', 'register', 'choose-role'
   const [role, setRole] = useState(null); // 'seeker' or 'provider'
@@ -24,16 +25,14 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     description: '',
   });
 
-  const categories = [
-    { id: 'healthcare', name: 'Healthcare', nameFr: 'Santé' },
-    { id: 'home', name: 'Home Services', nameFr: 'Services à domicile' },
-    { id: 'auto', name: 'Auto Services', nameFr: 'Services auto' },
-    { id: 'beauty', name: 'Beauty & Wellness', nameFr: 'Beauté & Bien-être' },
-    { id: 'education', name: 'Education', nameFr: 'Éducation' },
-    { id: 'legal', name: 'Legal', nameFr: 'Juridique' },
-    { id: 'tech', name: 'Tech & IT', nameFr: 'Tech & TI' },
-    { id: 'repairs', name: 'Repairs', nameFr: 'Réparations' },
-  ];
+  // Filter out 'all' category and map for select
+  const availableCategories = allCategories
+    .filter(cat => cat.id !== 'all')
+    .map(cat => ({
+      id: cat.id,
+      name: language === 'fr' ? cat.nameFr : cat.nameEn
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -359,8 +358,8 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                         required
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
                       >
-                        <option value="">Select a category</option>
-                        {categories.map(cat => (
+                        <option value="">{language === 'fr' ? 'Sélectionnez une catégorie' : 'Select a category'}</option>
+                        {availableCategories.map(cat => (
                           <option key={cat.id} value={cat.id}>{cat.name}</option>
                         ))}
                       </select>

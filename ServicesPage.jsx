@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Search, Filter, Star, MapPin, Shield, Clock } from 'lucide-react';
-import { categories as allCategories, getCategoryName } from '../data/categories';
+import { categories as allCategories, getCategoryName } from './categories';
 
 const ServicesPage = ({ language }) => {
   const { category } = useParams();

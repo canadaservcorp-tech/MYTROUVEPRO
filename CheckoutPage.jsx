@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useCart } from '../context/CartContext';
-import SquarePayment from '../components/SquarePayment';
+import { useCart } from './CartContext';
+import SquarePayment from './SquarePayment';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, ShoppingCart, User, Mail, Phone, MapPin, Calendar, Clock } from 'lucide-react';
 
@@ -45,6 +45,8 @@ const CheckoutPage = ({ language }) => {
       gst: 'GST (5%)',
       qst: 'QST (9.975%)',
       total: 'Total',
+      payNowDeposit: 'Pay Now (10% Deposit)',
+      payOnCompletion: 'Pay to Provider Later',
       emptyCart: 'Your cart is empty',
       browseServices: 'Browse Services',
       successTitle: 'Booking Confirmed!',
@@ -77,6 +79,8 @@ const CheckoutPage = ({ language }) => {
       gst: 'TPS (5%)',
       qst: 'TVQ (9.975%)',
       total: 'Total',
+      payNowDeposit: 'Payer maintenant (Dépôt 10%)',
+      payOnCompletion: 'Payer au fournisseur plus tard',
       emptyCart: 'Votre panier est vide',
       browseServices: 'Parcourir les services',
       successTitle: 'Réservation Confirmée!',
@@ -89,6 +93,8 @@ const CheckoutPage = ({ language }) => {
   };
 
   const t = content[language];
+  const depositAmount = grandTotal * 0.10;
+  const balanceAmount = grandTotal - depositAmount;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -145,6 +151,27 @@ const CheckoutPage = ({ language }) => {
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
               <p className="text-sm text-gray-500 mb-1">{t.bookingRef}</p>
               <p className="text-2xl font-mono font-bold text-blue-600">{bookingRef}</p>
+            </div>
+            
+            <div className="bg-blue-50 rounded-lg p-4 mb-6 text-left">
+              <p className="font-semibold text-blue-900 mb-2">Next Steps:</p>
+              <ul className="text-sm text-blue-800 list-disc list-inside space-y-2">
+                <li>You've successfully paid the 10% deposit (${depositAmount.toFixed(2)}).</li>
+                <li><strong>Contact Details Unlocked:</strong> You can now contact the provider directly to finalize details.</li>
+                <li>The provider has been notified of your booking.</li>
+                <li>You will pay the remaining balance (${balanceAmount.toFixed(2)}) directly to the provider.</li>
+              </ul>
+            </div>
+
+            <div className="bg-green-50 rounded-lg p-6 mb-6 text-left border border-green-200">
+              <h3 className="font-bold text-green-900 mb-3 flex items-center">
+                <Phone size={18} className="mr-2" /> Provider Contact Info
+              </h3>
+              <div className="space-y-2">
+                <p className="text-gray-700"><strong>Provider:</strong> {items[0]?.providerName || 'Service Provider'}</p>
+                <p className="text-gray-700"><strong>Phone:</strong> (514) 555-0123</p>
+                <p className="text-gray-700"><strong>Email:</strong> contact@{items[0]?.providerName?.toLowerCase().replace(/\s+/g, '') || 'provider'}.com</p>
+              </div>
             </div>
 
             <div className="space-y-3">
@@ -371,6 +398,7 @@ const CheckoutPage = ({ language }) => {
                 </button>
                 <SquarePayment
                   language={language}
+                  amount={depositAmount}
                   onSuccess={handlePaymentSuccess}
                   onError={handlePaymentError}
                 />
@@ -414,7 +442,19 @@ const CheckoutPage = ({ language }) => {
                 </div>
                 <div className="flex justify-between text-lg font-bold pt-2 border-t">
                   <span>{t.total}</span>
-                  <span className="text-blue-600">${grandTotal.toFixed(2)} CAD</span>
+                  <span className="text-gray-900">${grandTotal.toFixed(2)} CAD</span>
+                </div>
+                
+                {/* 10% Deposit Info */}
+                <div className="bg-blue-50 p-3 rounded-lg mt-3 border border-blue-100">
+                  <div className="flex justify-between text-sm font-bold text-blue-700">
+                    <span>{t.payNowDeposit}</span>
+                    <span>${depositAmount.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>{t.payOnCompletion}</span>
+                    <span>${balanceAmount.toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
             </div>

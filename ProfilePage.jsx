@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './AuthContext-Supabase'; 
+import PhotoUploadWithWatermark from './PhotoUploadWithWatermark';
 import { 
   User, 
   Mail, 
@@ -17,13 +18,13 @@ const ProfilePage = () => {
   const [saved, setSaved] = useState(false);
 
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
+    firstName: user?.first_name || '',
+    lastName: user?.last_name || '',
     email: user?.email || '',
     phone: user?.phone || '',
     city: user?.city || '',
-    businessName: user?.businessName || '',
-    description: user?.description || '',
+    businessName: user?.business_name || '',
+    description: user?.business_description || '',
   });
 
   const handleChange = (e) => {
@@ -35,13 +36,32 @@ const ProfilePage = () => {
     e.preventDefault();
     setSaving(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Map back to snake_case for the database
+    const updates = {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      city: formData.city,
+    };
     
-    updateProfile(formData);
+    if (isProvider) {
+      // For simplicity, we update the user record. 
+      // In production, we would also update the provider_profile table.
+    }
+
+    await updateProfile(updates);
     setSaving(false);
     setSaved(true);
     
+    setTimeout(() => setSaved(false), 3000);
+  };
+
+  const handlePhotoUpload = (files) => {
+    // In production, upload files to server/storage
+    console.log('Photos uploaded:', files);
+    // You might want to update the user profile with these photo URLs
+    setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
 
@@ -181,6 +201,20 @@ const ProfilePage = () => {
                   You keep 90% of every booking. No monthly fees!
                 </p>
               </div>
+            </div>
+          )}
+
+          {/* Service Photos (Provider Only) */}
+          {isProvider && (
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h2 className="text-lg font-semibold mb-4">Service Photos</h2>
+              <p className="text-sm text-gray-500 mb-4">
+                Upload photos of your work. They will be automatically watermarked.
+              </p>
+              <PhotoUploadWithWatermark 
+                onUploadComplete={handlePhotoUpload}
+                watermarkText="myTROUVEpro" 
+              />
             </div>
           )}
 
