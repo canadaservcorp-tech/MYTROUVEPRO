@@ -17,7 +17,6 @@ const ProvidersPage = ({ language }) => {
       newest: 'Newest',
       verified: 'Verified',
       viewProfile: 'View Profile',
-      bookNow: 'Book Now',
       reviews_count: 'reviews',
     },
     fr: {
@@ -30,7 +29,6 @@ const ProvidersPage = ({ language }) => {
       newest: 'Plus Récents',
       verified: 'Vérifié',
       viewProfile: 'Voir le Profil',
-      bookNow: 'Réserver',
       reviews_count: 'avis',
     }
   };
@@ -121,10 +119,10 @@ const ProvidersPage = ({ language }) => {
                   {provider.location}
                 </div>
                 <Link
-                  to={`/providers/${provider.id}/book`}
-                  className="mt-4 block text-center bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium transition-colors"
+                  to={`/providers/${provider.id}`}
+                  className="mt-4 block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-colors"
                 >
-                  {t.bookNow}
+                  {t.viewProfile}
                 </Link>
               </div>
             </div>
