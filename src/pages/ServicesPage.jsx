@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Search, Filter, Star, MapPin, Shield, Clock } from 'lucide-react';
+import WatermarkedImage from '../components/WatermarkedImage';
 
 const ServicesPage = ({ language }) => {
   const { category } = useParams();
@@ -215,10 +216,10 @@ const ServicesPage = ({ language }) => {
                 <div key={provider.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex flex-col sm:flex-row">
                     <div className="sm:w-48 h-48 sm:h-auto bg-gray-200 flex-shrink-0">
-                      <img 
-                        src={provider.image} 
+                      <WatermarkedImage
+                        src={provider.image}
                         alt={provider.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full"
                       />
                     </div>
                     <div className="flex-1 p-6">
@@ -254,7 +255,7 @@ const ServicesPage = ({ language }) => {
                       
                       <div className="mt-4">
                         <Link
-                          to={`/providers/${provider.id}`}
+                          to={`/providers/${provider.id}/book`}
                           className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
                         >
                           {t.viewProfile}

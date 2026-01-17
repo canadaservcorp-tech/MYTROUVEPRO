@@ -5,33 +5,49 @@
 // NEQ: 2280629637
 // ============================================
 
-const express = require('express');
-const cors = require('cors');
-const { Client, Environment } = require('square');
-const crypto = require('crypto');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import { Client, Environment } from 'square';
+import crypto from 'crypto';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
 // ============================================
 // MIDDLEWARE
 // ============================================
+const defaultOrigins = [
+  'https://mytrouvepro11.netlify.app',
+  'https://mytrouvepro.com',
+  'http://localhost:3000',
+  'http://localhost:5173',
+];
+const envOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map(origin => origin.trim()).filter(Boolean)
+  : [];
+const allowedOrigins = [...new Set([...defaultOrigins, ...envOrigins])];
+const primaryFrontendUrl = (envOrigins[0] || defaultOrigins[0]).replace(/\/$/, '');
+
 app.use(cors({
-  origin: [
-    'https://mytrouvepro11.netlify.app',
-    'https://mytrouvepro.com',
-    'http://localhost:3000',
-    'http://localhost:5173'
-  ],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    callback(new Error('Not allowed by CORS'));
+  },
   methods: ['GET', 'POST'],
-  credentials: true
+  credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 // ============================================
 // SQUARE CONFIGURATION
 // ============================================
 const isProduction = process.env.SQUARE_ENVIRONMENT === 'production';
+const COMMISSION_RATE = 0.1;
 
 const squareClient = new Client({
   accessToken: process.env.SQUARE_ACCESS_TOKEN,
@@ -67,10 +83,17 @@ app.get('/', (req, res) => {
 
 // Get Square App ID (for frontend)
 app.get('/api/config', (req, res) => {
+  if (!appId || !locationId) {
+    res.status(500).json({
+      error: 'Square configuration missing on server'
+    });
+    return;
+  }
   res.json({
     appId: appId,
     locationId: locationId,
-    environment: isProduction ? 'production' : 'sandbox'
+    environment: isProduction ? 'production' : 'sandbox',
+    commissionRate: COMMISSION_RATE
   });
 });
 
@@ -117,7 +140,8 @@ app.post('/api/create-payment-link', async (req, res) => {
     } = req.body;
 
     // Validate
-    if (!serviceName || !amount) {
+    const parsedAmount = Number(amount);
+    if (!serviceName || !Number.isFinite(parsedAmount) || parsedAmount <= 0) {
       return res.status(400).json({ 
         success: false, 
         error: 'Service name and amount are required' 
@@ -127,10 +151,12 @@ app.post('/api/create-payment-link', async (req, res) => {
     const idempotencyKey = crypto.randomBytes(16).toString('hex');
     
     // Calculate taxes (Quebec)
-    const subtotal = Math.round(amount * 100); // Convert to cents
+    const subtotal = Math.round(parsedAmount * 100); // Convert to cents
     const tps = Math.round(subtotal * 0.05); // 5% GST
     const tvq = Math.round(subtotal * 0.09975); // 9.975% QST
     const total = subtotal + tps + tvq;
+    const commissionAmount = Math.round(subtotal * COMMISSION_RATE);
+    const providerPayout = subtotal - commissionAmount;
 
     // Create payment link
     const response = await squareClient.checkoutApi.createPaymentLink({
@@ -172,7 +198,7 @@ app.post('/api/create-payment-link', async (req, res) => {
       },
       checkoutOptions: {
         allowTipping: true,
-        redirectUrl: 'https://mytrouvepro11.netlify.app/booking-success',
+        redirectUrl: `${primaryFrontendUrl}/booking-success`,
         merchantSupportEmail: 'support@mytrouvepro.com'
       },
       prePopulatedData: {
@@ -191,10 +217,12 @@ app.post('/api/create-payment-link', async (req, res) => {
         orderId: paymentLink.orderId
       },
       pricing: {
-        subtotal: amount,
+        subtotal: parsedAmount,
         tps: tps / 100,
         tvq: tvq / 100,
-        total: total / 100
+        total: total / 100,
+        commission: commissionAmount / 100,
+        providerPayout: providerPayout / 100
       }
     });
 
@@ -220,7 +248,8 @@ app.post('/api/process-payment', async (req, res) => {
       providerName
     } = req.body;
 
-    if (!sourceId || !amount) {
+    const parsedAmount = Number(amount);
+    if (!sourceId || !Number.isFinite(parsedAmount) || parsedAmount <= 0) {
       return res.status(400).json({
         success: false,
         error: 'Source ID and amount are required'
@@ -230,10 +259,12 @@ app.post('/api/process-payment', async (req, res) => {
     const idempotencyKey = crypto.randomBytes(16).toString('hex');
     
     // Calculate total with taxes
-    const subtotal = Math.round(amount * 100);
+    const subtotal = Math.round(parsedAmount * 100);
     const tps = Math.round(subtotal * 0.05);
     const tvq = Math.round(subtotal * 0.09975);
     const total = subtotal + tps + tvq;
+    const commissionAmount = Math.round(subtotal * COMMISSION_RATE);
+    const providerPayout = subtotal - commissionAmount;
 
     // Process payment
     const response = await squareClient.paymentsApi.createPayment({
@@ -261,10 +292,12 @@ app.post('/api/process-payment', async (req, res) => {
         referenceId: payment.referenceId
       },
       pricing: {
-        subtotal: amount,
+        subtotal: parsedAmount,
         tps: tps / 100,
         tvq: tvq / 100,
-        total: total / 100
+        total: total / 100,
+        commission: commissionAmount / 100,
+        providerPayout: providerPayout / 100
       }
     });
 
@@ -408,4 +441,4 @@ app.listen(PORT, () => {
   `);
 });
 
-module.exports = app;
+export default app;

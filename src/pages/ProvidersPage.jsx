@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Star, MapPin, Shield, Filter } from 'lucide-react';
+import { Search, Star, MapPin, Shield } from 'lucide-react';
+import WatermarkedImage from '../components/WatermarkedImage';
 
 const ProvidersPage = ({ language }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -95,10 +96,10 @@ const ProvidersPage = ({ language }) => {
           {filteredProviders.map((provider) => (
             <div key={provider.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
               <div className="h-48 bg-gray-200 relative">
-                <img 
-                  src={provider.image} 
+                <WatermarkedImage
+                  src={provider.image}
                   alt={provider.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full"
                 />
                 {provider.verified && (
                   <span className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center">
@@ -119,7 +120,7 @@ const ProvidersPage = ({ language }) => {
                   {provider.location}
                 </div>
                 <Link
-                  to={`/providers/${provider.id}`}
+                  to={`/providers/${provider.id}/book`}
                   className="mt-4 block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-colors"
                 >
                   {t.viewProfile}

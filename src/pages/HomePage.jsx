@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Star, ArrowRight, Shield, Clock, ThumbsUp } from 'lucide-react';
+import WatermarkedImage from '../components/WatermarkedImage';
 
 const HomePage = ({ language }) => {
   const content = {
@@ -218,10 +219,10 @@ const HomePage = ({ language }) => {
             {featuredProviders.map((provider) => (
               <div key={provider.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="h-48 bg-gray-200 relative">
-                  <img 
-                    src={provider.image} 
+                  <WatermarkedImage
+                    src={provider.image}
                     alt={provider.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full"
                   />
                   {provider.verified && (
                     <span className="absolute top-3 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center">

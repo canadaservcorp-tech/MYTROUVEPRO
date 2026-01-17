@@ -1,20 +1,24 @@
-    import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from '../AuthContext-Supabase';
-import { CartProvider } from '../CartContext';
-import Header from '../Header';
-import Footer from '../Footer';
-import Cart from '../Cart';
-import HomePage from '../HomePage';
-import ServicesPage from '../ServicesPage';
-import ProvidersPage from '../ProvidersPage';
-import BookServicePage from '../BookServicePage';
-import CheckoutPage from '../CheckoutPage';
-import AboutPage from '../AboutPage';
-import ContactPage from '../ContactPage';
-import ProfilePage from '../ProfilePage';
-import ProviderDashboard from '../ProviderDashboard';
-import SeekerDashboard from '../SeekerDashboard';
+import { AuthProvider } from './contexts/AuthContext';
+import { CartProvider } from './contexts/CartContext';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Cart from './components/Cart';
+import HomePage from './pages/HomePage';
+import ServicesPage from './pages/ServicesPage';
+import ProvidersPage from './pages/ProvidersPage';
+import BookServicePage from './pages/BookServicePage';
+import CheckoutPage from './pages/CheckoutPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
+import ProfilePage from './pages/ProfilePage';
+import ProviderDashboard from './pages/ProviderDashboard';
+import SeekerDashboard from './pages/SeekerDashboard';
+import ProviderServicesPage from './pages/ProviderServicesPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
+import BookingSuccessPage from './pages/BookingSuccessPage';
 
 function App() {
   const [language, setLanguage] = useState('en');
@@ -46,7 +50,11 @@ function App() {
                 <Route path="/contact" element={<ContactPage language={language} />} />
                 <Route path="/profile" element={<ProfilePage language={language} />} />
                 <Route path="/provider/dashboard" element={<ProviderDashboard language={language} />} />
+                <Route path="/provider/services" element={<ProviderServicesPage language={language} />} />
                 <Route path="/seeker/dashboard" element={<SeekerDashboard language={language} />} />
+                <Route path="/booking-success" element={<BookingSuccessPage />} />
+                <Route path="/privacy" element={<PrivacyPage language={language} />} />
+                <Route path="/terms" element={<TermsPage language={language} />} />
                 <Route path="*" element={<HomePage language={language} />} />
               </Routes>
             </main>
