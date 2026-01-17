@@ -1,7 +1,7 @@
     import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext-Supabase';
-import { CartProvider } from './contexts/CartContext';
+import { AuthProvider } from '../AuthContext-Supabase';
+import { CartProvider } from '../CartContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
