@@ -2,8 +2,8 @@
 
 ## Project summary
 - Frontend: React + Vite with React Router and Tailwind CSS.
-- Backend: Node/Express payment server in `server.js` using Square.
-- Auth/data: Supabase client helpers in `supabase.js`.
+- Backend: Node/Express maintenance API in `server.js` using SQLite.
+- Auth: email + password with JWT.
 
 ## Source of truth
 - Vite entry is `index.html` -> `/src/main.jsx`.
@@ -11,8 +11,8 @@
 
 ## Key paths
 - `src/main.jsx`, `src/App.jsx`, `src/components/`, `src/pages/`, `src/index.css`
-- `server.js` for payment endpoints
-- `schema.sql` for database schema
+- `server.js` for maintenance API
+- `data/maintenance.db` for local database
 
 ## Setup
 - `npm install`
@@ -24,22 +24,17 @@
 
 ## Environment variables
 Frontend (Vite):
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
-- `VITE_BACKEND_URL`
-- `VITE_SQUARE_APPLICATION_ID`
-- `VITE_SQUARE_LOCATION_ID`
-- `VITE_SQUARE_ENVIRONMENT`
+- `VITE_API_BASE_URL`
 
 Backend (`server.js`):
-- `SQUARE_ACCESS_TOKEN`
-- `SQUARE_APPLICATION_ID`
-- `SQUARE_LOCATION_ID`
-- `SQUARE_ENVIRONMENT`
-- `FRONTEND_URL`
 - `PORT`
-- `NODE_ENV`
+- `JWT_SECRET`
+- `CLIENT_URL` or `CLIENT_URLS`
+- `BOOTSTRAP_KEY`
+- `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM`
+- `REMINDER_CRON`
+- `DB_PATH`
 
 ## Notes for agents
-- If you need to run the backend locally, verify `express`, `cors`, `square`, and `dotenv` are installed; they are required by `server.js`.
+- If you need to run the backend locally, use `npm run dev:server`.
 - There is no dedicated test runner configured; use `npm run build` as a smoke check when needed.

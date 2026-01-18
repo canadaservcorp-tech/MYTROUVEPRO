@@ -1,90 +1,50 @@
-# myTROUVEpro Authentication System
+# La Maison Benoit Labre Maintenance App
 
-## Files to Upload to GitHub
+Central maintenance management for La Maison Benoit Labre: tasks, preventive schedules, costs, contractors, and apartment tracking.
 
-### New Files (Create these):
+## Features
+- Admin and staff roles (email + password)
+- Task assignment with due dates, costs, and remarks
+- Preventive maintenance reminders (email 1 day before)
+- Contractors directory with reviews (admin only)
+- Apartments (36 units) and common/service areas tracking
+- Categories: MEP, Architecture, Civil, FFS, FAS
+
+## Tech
+- Frontend: React + Vite + Tailwind
+- Backend: Node.js + Express + SQLite
+
+## Quick start (local)
+1) Install dependencies
+   - `npm install`
+2) Start backend
+   - `npm run dev:server`
+3) Start frontend
+   - `npm run dev`
+
+## Backend environment variables
+Create `.env` in the project root:
+- `PORT=4000`
+- `JWT_SECRET=change-me`
+- `CLIENT_URL=http://localhost:5173`
+- `BOOTSTRAP_KEY=your-bootstrap-key`
+
+Optional email reminders:
+- `SMTP_HOST=`
+- `SMTP_PORT=`
+- `SMTP_USER=`
+- `SMTP_PASS=`
+- `SMTP_FROM=maintenance@lmb.local`
+- `REMINDER_CRON=0 8 * * *`
+
+## Bootstrap first admin
+Call `POST /api/auth/bootstrap` with header `x-bootstrap-key` set to `BOOTSTRAP_KEY`.
+
+Payload:
 ```
-src/
-├── context/
-│   └── AuthContext.jsx       # User authentication state management
-├── components/
-│   ├── AuthModal.jsx         # Login/Signup modal
-│   ├── UserMenu.jsx          # Dropdown menu for logged-in users
-│   └── Header.jsx            # Updated header with auth buttons
-├── pages/
-│   ├── ProviderDashboard.jsx # Dashboard for service providers
-│   ├── SeekerDashboard.jsx   # Dashboard for customers
-│   └── ProfilePage.jsx       # User profile settings
-```
-
-## Integration Steps
-
-### Step 1: Wrap App with AuthProvider
-
-In your main `App.jsx`, wrap everything with AuthProvider:
-
-```jsx
-import { AuthProvider } from './context/AuthContext';
-
-function App() {
-  return (
-    <AuthProvider>
-      {/* Your existing app content */}
-    </AuthProvider>
-  );
-}
-```
-
-### Step 2: Add Routes
-
-Add these routes to your App.jsx:
-
-```jsx
-import ProviderDashboard from './pages/ProviderDashboard';
-import SeekerDashboard from './pages/SeekerDashboard';
-import ProfilePage from './pages/ProfilePage';
-
-// Inside Routes:
-<Route path="/dashboard" element={<ProviderDashboard />} />
-<Route path="/my-dashboard" element={<SeekerDashboard />} />
-<Route path="/profile" element={<ProfilePage />} />
+{ "name": "Admin", "email": "admin@example.com", "password": "SecurePass123", "phone": "514-000-0000" }
 ```
 
-### Step 3: Replace Header
-
-Replace your existing Header component with the new one that includes auth buttons.
-
-## Business Model Implemented
-
-- ✅ FREE registration for all users
-- ✅ Providers: 10% commission on bookings
-- ✅ Seekers: Always FREE
-- ✅ Contact info hidden until booking
-
-## Features Included
-
-1. **Sign In / Sign Up** buttons in header
-2. **Role Selection**: Seeker or Provider
-3. **Provider Registration** with:
-   - Business name
-   - Service category
-   - Description
-   - 10% commission notice
-4. **Seeker Registration** (basic info)
-5. **User Dashboards**:
-   - Provider: Earnings, bookings, services
-   - Seeker: Upcoming bookings, favorites
-6. **Profile Settings** page
-7. **User Menu** with role-specific options
-
-## For Netlify Agent
-
-Copy this prompt to add authentication:
-
-```
-Add user authentication system:
-1. Import AuthProvider from context/AuthContext and wrap the app
-2. Replace Header with new Header component that has Sign In / Join Free buttons
-3. Add routes for /dashboard, /my-dashboard, /profile
-4. Show different dashboards based on user role (provider vs seeker)
-```
+## Notes
+- Database file is stored at `data/maintenance.db`.
+- Reminders are sent 1 day before the task due date.
