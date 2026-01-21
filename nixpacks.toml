@@ -1,0 +1,9 @@
+[variables]
+NIXPACKS_NODE_VERSION = "20"
+
+[phases.setup]
+nixPkgs = ["python3", "gnumake", "gcc", "pkg-config"]
+
+# Optional: ensures Railway starts backend directly
+[start]
+cmd = "node server.js"
