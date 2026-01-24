@@ -192,7 +192,7 @@ const ServicesPage = ({ language }) => {
                 {categories.map((cat) => (
                   <Link
                     key={cat.id}
-                    to={cat.id === 'all' ? '/services' : `/services/${cat.id}`}
+                    to={cat.id === 'all' ? '/providers' : `/providers/${cat.id}`}
                     className={`flex items-center px-3 py-2 rounded-lg transition-colors ${
                       (category === cat.id || (!category && cat.id === 'all'))
                         ? 'bg-blue-50 text-blue-700'

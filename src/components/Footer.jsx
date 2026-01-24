@@ -79,10 +79,10 @@ const Footer = ({ language }) => {
           <div>
             <h3 className="text-white font-semibold mb-4">{t.services}</h3>
             <ul className="space-y-2">
-              <li><Link to="/services/home" className="hover:text-white transition-colors">{t.home}</Link></li>
-              <li><Link to="/services/auto" className="hover:text-white transition-colors">{t.auto}</Link></li>
-              <li><Link to="/services/professional" className="hover:text-white transition-colors">{t.professional}</Link></li>
-              <li><Link to="/services/events" className="hover:text-white transition-colors">{t.events}</Link></li>
+              <li><Link to="/providers/plumbing" className="hover:text-white transition-colors">{t.home}</Link></li>
+              <li><Link to="/providers/auto" className="hover:text-white transition-colors">{t.auto}</Link></li>
+              <li><Link to="/providers/tech" className="hover:text-white transition-colors">{t.professional}</Link></li>
+              <li><Link to="/providers/moving" className="hover:text-white transition-colors">{t.events}</Link></li>
             </ul>
           </div>
 

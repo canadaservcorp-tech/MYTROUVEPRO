@@ -14,6 +14,7 @@ import ContractorsPage from './pages/ContractorsPage';
 import ApartmentsPage from './pages/ApartmentsPage';
 import AreasPage from './pages/AreasPage';
 import UsersPage from './pages/UsersPage';
+import ProviderList from './pages/ProviderList';
 
 const App = () => (
   <BrowserRouter>
@@ -21,6 +22,8 @@ const App = () => (
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/providers" element={<ProviderList />} />
+          <Route path="/providers/:category" element={<ProviderList />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Navigate to="/dashboard" replace />} />

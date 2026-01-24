@@ -157,7 +157,7 @@ const HomePage = ({ language }) => {
             {categories.map((category) => (
               <Link
                 key={category.id}
-                to={`/services/${category.id}`}
+                to={`/providers/${category.id}`}
                 className="bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-xl p-6 text-center transition-all group"
               >
                 <span className="text-4xl block mb-3">{category.icon}</span>
