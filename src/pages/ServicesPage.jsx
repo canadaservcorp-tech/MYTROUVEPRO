@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Search, Filter, Star, MapPin, Shield, Clock } from 'lucide-react';
+import WatermarkedImage from '../components/WatermarkedImage';
 
 const ServicesPage = ({ language }) => {
   const { category } = useParams();
@@ -56,6 +57,10 @@ const ServicesPage = ({ language }) => {
       rating: 4.9,
       reviews: 127,
       location: 'Laval, QC',
+      city: 'Laval',
+      province: 'QC',
+      latitude: 45.5704,
+      longitude: -73.7243,
       responseTime: 2,
       image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400',
       verified: true,
@@ -71,6 +76,10 @@ const ServicesPage = ({ language }) => {
       rating: 4.8,
       reviews: 98,
       location: 'Laval, QC',
+      city: 'Laval',
+      province: 'QC',
+      latitude: 45.5848,
+      longitude: -73.7086,
       responseTime: 3,
       image: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400',
       verified: true,
@@ -86,6 +95,10 @@ const ServicesPage = ({ language }) => {
       rating: 4.9,
       reviews: 215,
       location: 'Montreal, QC',
+      city: 'Montreal',
+      province: 'QC',
+      latitude: 45.5017,
+      longitude: -73.5673,
       responseTime: 1,
       image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
       verified: true,
@@ -101,6 +114,10 @@ const ServicesPage = ({ language }) => {
       rating: 4.7,
       reviews: 89,
       location: 'Laval, QC',
+      city: 'Laval',
+      province: 'QC',
+      latitude: 45.5609,
+      longitude: -73.7421,
       responseTime: 4,
       image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400',
       verified: true,
@@ -116,6 +133,10 @@ const ServicesPage = ({ language }) => {
       rating: 4.8,
       reviews: 156,
       location: 'Laval, QC',
+      city: 'Laval',
+      province: 'QC',
+      latitude: 45.5992,
+      longitude: -73.7183,
       responseTime: 2,
       image: 'https://images.unsplash.com/photo-1558904541-efa843a96f01?w=400',
       verified: true,
@@ -131,6 +152,10 @@ const ServicesPage = ({ language }) => {
       rating: 4.6,
       reviews: 72,
       location: 'Montreal, QC',
+      city: 'Montreal',
+      province: 'QC',
+      latitude: 45.5128,
+      longitude: -73.5825,
       responseTime: 1,
       image: 'https://images.unsplash.com/photo-1600518464441-9154a4dea21b?w=400',
       verified: true,
@@ -167,7 +192,7 @@ const ServicesPage = ({ language }) => {
                 {categories.map((cat) => (
                   <Link
                     key={cat.id}
-                    to={cat.id === 'all' ? '/services' : `/services/${cat.id}`}
+                    to={cat.id === 'all' ? '/providers' : `/providers/${cat.id}`}
                     className={`flex items-center px-3 py-2 rounded-lg transition-colors ${
                       (category === cat.id || (!category && cat.id === 'all'))
                         ? 'bg-blue-50 text-blue-700'
@@ -215,10 +240,10 @@ const ServicesPage = ({ language }) => {
                 <div key={provider.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex flex-col sm:flex-row">
                     <div className="sm:w-48 h-48 sm:h-auto bg-gray-200 flex-shrink-0">
-                      <img 
-                        src={provider.image} 
+                      <WatermarkedImage
+                        src={provider.image}
                         alt={provider.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full"
                       />
                     </div>
                     <div className="flex-1 p-6">
@@ -254,7 +279,7 @@ const ServicesPage = ({ language }) => {
                       
                       <div className="mt-4">
                         <Link
-                          to={`/providers/${provider.id}`}
+                          to={`/providers/${provider.id}/book`}
                           className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
                         >
                           {t.viewProfile}

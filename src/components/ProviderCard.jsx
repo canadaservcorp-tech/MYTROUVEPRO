@@ -2,8 +2,23 @@
 // Provider card with distance display for myTROUVEpro
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const ProviderCard = ({ provider, showDistance = true }) => {
+const ProviderCard = ({ provider, showDistance = true, language = 'fr', profileUrl }) => {
+  const isEnglish = language === 'en';
+  const labels = {
+    verified: isEnglish ? 'Verified' : 'Vérifié',
+    reviews: isEnglish ? 'reviews' : 'avis',
+    contact: isEnglish ? 'Contact' : 'Contacter',
+    viewProfile: isEnglish ? 'View Profile' : 'Voir profil',
+  };
+
+  const reviewCount = provider.reviewCount ?? provider.reviews ?? 0;
+  const locationText = provider.city
+    ? `${provider.city}, ${provider.province || 'QC'}`
+    : provider.location;
+  const resolvedProfileUrl = profileUrl || provider.profileUrl || `/providers/${provider.id}/book`;
+
   return (
     <div className="provider-card">
       {/* Provider Image */}
@@ -17,7 +32,7 @@ const ProviderCard = ({ provider, showDistance = true }) => {
             </svg>
           </div>
         )}
-        
+
         {/* Distance Badge */}
         {showDistance && provider.distance !== null && provider.distance !== undefined && (
           <div className="distance-badge">
@@ -34,7 +49,7 @@ const ProviderCard = ({ provider, showDistance = true }) => {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
             </svg>
-            <span>Vérifié</span>
+            <span>{labels.verified}</span>
           </div>
         )}
       </div>
@@ -42,9 +57,9 @@ const ProviderCard = ({ provider, showDistance = true }) => {
       {/* Provider Info */}
       <div className="provider-info">
         <h3 className="provider-name">{provider.name}</h3>
-        
+
         {/* Rating */}
-        {provider.rating && (
+        {provider.rating !== undefined && provider.rating !== null && (
           <div className="provider-rating">
             <div className="stars">
               {[...Array(5)].map((_, i) => (
@@ -61,7 +76,7 @@ const ProviderCard = ({ provider, showDistance = true }) => {
               ))}
             </div>
             <span className="rating-count">
-              {provider.rating.toFixed(1)} ({provider.reviewCount || 0} avis)
+              {provider.rating.toFixed(1)} ({reviewCount} {labels.reviews})
             </span>
           </div>
         )}
@@ -77,7 +92,7 @@ const ProviderCard = ({ provider, showDistance = true }) => {
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
             <circle cx="12" cy="10" r="3"/>
           </svg>
-          <span>{provider.city}, {provider.province || 'QC'}</span>
+          <span>{locationText}</span>
         </div>
 
         {/* Price Range */}
@@ -91,12 +106,12 @@ const ProviderCard = ({ provider, showDistance = true }) => {
 
       {/* Action Button */}
       <div className="provider-actions">
-        <button className="btn-contact">
-          Contacter
+        <button className="btn-contact" type="button">
+          {labels.contact}
         </button>
-        <button className="btn-view-profile">
-          Voir profil
-        </button>
+        <Link className="btn-view-profile" to={resolvedProfileUrl}>
+          {labels.viewProfile}
+        </Link>
       </div>
     </div>
   );

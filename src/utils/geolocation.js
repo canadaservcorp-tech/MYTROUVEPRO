@@ -17,7 +17,7 @@ export const getUserLocation = () => {
         resolve({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy
+          accuracy: position.coords.accuracy,
         });
       },
       (error) => {
@@ -38,7 +38,7 @@ export const getUserLocation = () => {
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 0
+        maximumAge: 0,
       }
     );
   });
@@ -56,17 +56,17 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Earth's radius in kilometers
   const dLat = toRadians(lat2 - lat1);
   const dLon = toRadians(lon2 - lon1);
-  
+
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRadians(lat1)) *
     Math.cos(toRadians(lat2)) *
     Math.sin(dLon / 2) *
     Math.sin(dLon / 2);
-  
+
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c;
-  
+
   return Math.round(distance * 10) / 10; // Round to 1 decimal
 };
 
@@ -111,13 +111,13 @@ export const sortProvidersByDistance = (providers, userLocation) => {
         return {
           ...provider,
           distance,
-          distanceText: formatDistance(distance)
+          distanceText: formatDistance(distance),
         };
       }
       return {
         ...provider,
         distance: null,
-        distanceText: 'Distance unavailable'
+        distanceText: 'Distance unavailable',
       };
     })
     .sort((a, b) => {
@@ -150,23 +150,23 @@ export const geocodeAddress = async (address) => {
   // This requires Google Maps Geocoding API key
   // Add your API key to environment variables: VITE_GOOGLE_MAPS_API_KEY
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-  
+
   if (!apiKey) {
     throw new Error('Google Maps API key not configured');
   }
 
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
-  
+
   try {
     const response = await fetch(url);
     const data = await response.json();
-    
+
     if (data.status === 'OK' && data.results.length > 0) {
       const location = data.results[0].geometry.location;
       return {
         latitude: location.lat,
         longitude: location.lng,
-        formattedAddress: data.results[0].formatted_address
+        formattedAddress: data.results[0].formatted_address,
       };
     } else {
       throw new Error('Address not found');
@@ -192,17 +192,17 @@ export const isGeolocationAvailable = () => {
  */
 export const getPostalCode = async (latitude, longitude) => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-  
+
   if (!apiKey) {
     return null;
   }
 
   const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
-  
+
   try {
     const response = await fetch(url);
     const data = await response.json();
-    
+
     if (data.status === 'OK' && data.results.length > 0) {
       // Find postal code in address components
       for (const result of data.results) {
