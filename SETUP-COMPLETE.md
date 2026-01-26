@@ -68,7 +68,10 @@ SQUARE_LOCATION_ID=Lxxxxxxxx
 SQUARE_ENVIRONMENT=sandbox
 PORT=3001
 NODE_ENV=production
-FRONTEND_URL=https://mytrouvepro11.netlify.app
+ADMIN_API_KEY=your_strong_admin_key
+MAX_PAYMENT_AMOUNT_CAD=10000
+ENFORCE_HTTPS=true
+CORS_ALLOWED_ORIGINS=https://mytrouvepro11.netlify.app,https://mytrouvepro.com
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
@@ -82,7 +85,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 curl https://your-app.up.railway.app/
 # Should return: {"status":"online",...}
 
-curl https://your-app.up.railway.app/api/test
+curl -H "x-api-key: your_strong_admin_key" https://your-app.up.railway.app/api/test
 # Should return Square location info
 
 curl https://your-app.up.railway.app/api/config
@@ -101,7 +104,7 @@ curl https://your-app.up.railway.app/api/config
 
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_anon_key
-VITE_BACKEND_URL=https://your-app.up.railway.app
+VITE_BACKEND_URL=https://your-app.up.railway.app  # Required for payment processing
 VITE_SQUARE_APPLICATION_ID=sq0idp-xxxxxxxx
 VITE_SQUARE_LOCATION_ID=Lxxxxxxxx
 VITE_SQUARE_ENVIRONMENT=sandbox
@@ -203,7 +206,9 @@ import { categories, getCategoryName } from '../data/categories';
 - [ ] Enable RLS policies in Supabase
 - [ ] Add rate limiting to backend
 - [ ] Enable HTTPS only
+- [ ] Set ADMIN_API_KEY for admin endpoints
 - [ ] Add CSP headers
+- [ ] Verify CSP allows Square + Supabase traffic
 
 ### 5.2 Switch to Production Square
 

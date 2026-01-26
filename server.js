@@ -13,20 +13,151 @@ require('dotenv').config();
 
 const app = express();
 
+app.disable('x-powered-by');
+app.set('trust proxy', 1);
+
 // ============================================
 // MIDDLEWARE
 // ============================================
+const defaultAllowedOrigins = [
+  'https://mytrouvepro11.netlify.app',
+  'https://mytrouvepro.com',
+  'http://localhost:3000',
+  'http://localhost:5173'
+];
+const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
+  ? process.env.CORS_ALLOWED_ORIGINS.split(',').map(origin => origin.trim()).filter(Boolean)
+  : defaultAllowedOrigins;
+
 app.use(cors({
-  origin: [
-    'https://mytrouvepro11.netlify.app',
-    'https://mytrouvepro.com',
-    'http://localhost:3000',
-    'http://localhost:5173'
-  ],
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, false);
+  },
   methods: ['GET', 'POST'],
   credentials: true
 }));
-app.use(express.json());
+app.use(express.json({ limit: '50kb' }));
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
+  res.setHeader('Cache-Control', 'no-store');
+  if (process.env.ENFORCE_HTTPS === 'true') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  next();
+});
+
+if (process.env.ENFORCE_HTTPS === 'true') {
+  app.use((req, res, next) => {
+    const proto = req.headers['x-forwarded-proto'];
+    if (proto && proto !== 'https') {
+      return res.status(403).json({ success: false, error: 'HTTPS required' });
+    }
+    return next();
+  });
+}
+
+const rateLimitStore = new Map();
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT_MAX = 60;
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, value] of rateLimitStore.entries()) {
+    if (value.resetTime <= now) {
+      rateLimitStore.delete(key);
+    }
+  }
+}, RATE_LIMIT_WINDOW_MS).unref();
+
+const rateLimit = ({ windowMs = RATE_LIMIT_WINDOW_MS, max = RATE_LIMIT_MAX, keyPrefix }) => {
+  return (req, res, next) => {
+    const ip = req.ip || req.connection?.remoteAddress || 'unknown';
+    const key = `${keyPrefix}:${ip}`;
+    const now = Date.now();
+    let record = rateLimitStore.get(key);
+    if (!record || record.resetTime <= now) {
+      record = { count: 0, resetTime: now + windowMs };
+      rateLimitStore.set(key, record);
+    }
+    record.count += 1;
+
+    res.setHeader('X-RateLimit-Limit', max);
+    res.setHeader('X-RateLimit-Remaining', Math.max(0, max - record.count));
+    res.setHeader('X-RateLimit-Reset', Math.ceil(record.resetTime / 1000));
+
+    if (record.count > max) {
+      return res.status(429).json({ success: false, error: 'Too many requests' });
+    }
+    return next();
+  };
+};
+
+const ADMIN_API_KEY = process.env.ADMIN_API_KEY;
+const MAX_AMOUNT_CAD = Number(process.env.MAX_PAYMENT_AMOUNT_CAD || 10000);
+
+const safeCompare = (a, b) => {
+  if (!a || !b) return false;
+  const aBuffer = Buffer.from(a);
+  const bBuffer = Buffer.from(b);
+  if (aBuffer.length !== bBuffer.length) return false;
+  return crypto.timingSafeEqual(aBuffer, bBuffer);
+};
+
+const getApiKey = (req) => {
+  const authHeader = req.headers.authorization || '';
+  if (authHeader.startsWith('Bearer ')) {
+    return authHeader.slice(7).trim();
+  }
+  const headerKey = req.headers['x-api-key'];
+  if (Array.isArray(headerKey)) {
+    return headerKey[0];
+  }
+  return headerKey ? String(headerKey).trim() : '';
+};
+
+const requireAdminKey = (req, res, next) => {
+  if (!ADMIN_API_KEY) {
+    return res.status(503).json({ success: false, error: 'Admin API key not configured' });
+  }
+  const provided = getApiKey(req);
+  if (!safeCompare(provided, ADMIN_API_KEY)) {
+    return res.status(401).json({ success: false, error: 'Unauthorized' });
+  }
+  return next();
+};
+
+const sanitizeText = (value, maxLength = 256) => {
+  if (typeof value !== 'string') return '';
+  return value.trim().slice(0, maxLength);
+};
+
+const sanitizeOptionalText = (value, maxLength = 256) => {
+  const text = sanitizeText(value, maxLength);
+  return text.length > 0 ? text : undefined;
+};
+
+const parseAmount = (value) => {
+  const amount = Number(value);
+  if (!Number.isFinite(amount) || amount <= 0 || amount > MAX_AMOUNT_CAD) {
+    return null;
+  }
+  return Math.round(amount * 100) / 100;
+};
+
+const handleServerError = (res, error, context) => {
+  console.error(`${context} error:`, error);
+  return res.status(500).json({ success: false, error: 'Internal server error' });
+};
 
 // ============================================
 // SQUARE CONFIGURATION
@@ -45,7 +176,6 @@ console.log(`
 ╔══════════════════════════════════════════════════════════════╗
 ║  myTROUVEpro Payment Server                                  ║
 ║  Mode: ${isProduction ? 'PRODUCTION 💰' : 'SANDBOX 🧪'}                                       ║
-║  Location: ${locationId}                              ║
 ╚══════════════════════════════════════════════════════════════╝
 `);
 
@@ -66,7 +196,7 @@ app.get('/', (req, res) => {
 });
 
 // Get Square App ID (for frontend)
-app.get('/api/config', (req, res) => {
+app.get('/api/config', rateLimit({ keyPrefix: 'config' }), (req, res) => {
   res.json({
     appId: appId,
     locationId: locationId,
@@ -75,7 +205,7 @@ app.get('/api/config', (req, res) => {
 });
 
 // Test Square connection
-app.get('/api/test', async (req, res) => {
+app.get('/api/test', requireAdminKey, rateLimit({ keyPrefix: 'admin-test' }), async (req, res) => {
   try {
     const response = await squareClient.locationsApi.retrieveLocation(locationId);
     const location = response.result.location;
@@ -93,15 +223,12 @@ app.get('/api/test', async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    return handleServerError(res, error, 'Square test');
   }
 });
 
 // Create Payment Link (for booking services)
-app.post('/api/create-payment-link', async (req, res) => {
+app.post('/api/create-payment-link', rateLimit({ keyPrefix: 'payment-link' }), async (req, res) => {
   try {
     const { 
       serviceName, 
@@ -116,18 +243,21 @@ app.post('/api/create-payment-link', async (req, res) => {
       address
     } = req.body;
 
+    const sanitizedServiceName = sanitizeText(serviceName, 120);
+    const validatedAmount = parseAmount(amount);
+
     // Validate
-    if (!serviceName || !amount) {
+    if (!sanitizedServiceName || validatedAmount === null) {
       return res.status(400).json({ 
         success: false, 
-        error: 'Service name and amount are required' 
+        error: 'Valid service name and amount are required' 
       });
     }
 
     const idempotencyKey = crypto.randomBytes(16).toString('hex');
     
     // Calculate taxes (Quebec)
-    const subtotal = Math.round(amount * 100); // Convert to cents
+    const subtotal = Math.round(validatedAmount * 100); // Convert to cents
     const tps = Math.round(subtotal * 0.05); // 5% GST
     const tvq = Math.round(subtotal * 0.09975); // 9.975% QST
     const total = subtotal + tps + tvq;
@@ -138,13 +268,13 @@ app.post('/api/create-payment-link', async (req, res) => {
       order: {
         locationId,
         lineItems: [{
-          name: serviceName,
+          name: sanitizedServiceName,
           quantity: '1',
           basePriceMoney: {
             amount: BigInt(subtotal),
             currency: 'CAD'
           },
-          note: `Provider: ${providerName || 'TBD'} | Date: ${bookingDate || 'TBD'} at ${bookingTime || 'TBD'}`
+          note: `Provider: ${sanitizeText(providerName, 80) || 'TBD'} | Date: ${sanitizeText(bookingDate, 40) || 'TBD'} at ${sanitizeText(bookingTime, 40) || 'TBD'}`
         }],
         taxes: [
           {
@@ -161,12 +291,12 @@ app.post('/api/create-payment-link', async (req, res) => {
           }
         ],
         metadata: {
-          providerId: providerId || 'N/A',
-          providerName: providerName || 'N/A',
-          customerName: customerName || 'N/A',
-          bookingDate: bookingDate || 'TBD',
-          bookingTime: bookingTime || 'TBD',
-          address: address || 'TBD',
+          providerId: sanitizeText(providerId, 60) || 'N/A',
+          providerName: sanitizeText(providerName, 80) || 'N/A',
+          customerName: sanitizeText(customerName, 80) || 'N/A',
+          bookingDate: sanitizeText(bookingDate, 40) || 'TBD',
+          bookingTime: sanitizeText(bookingTime, 40) || 'TBD',
+          address: sanitizeText(address, 120) || 'TBD',
           source: 'mytrouvepro-app'
         }
       },
@@ -176,8 +306,8 @@ app.post('/api/create-payment-link', async (req, res) => {
         merchantSupportEmail: 'support@mytrouvepro.com'
       },
       prePopulatedData: {
-        buyerEmail: customerEmail || undefined,
-        buyerPhoneNumber: customerPhone || undefined
+        buyerEmail: sanitizeOptionalText(customerEmail, 254),
+        buyerPhoneNumber: sanitizeOptionalText(customerPhone, 30)
       }
     });
 
@@ -191,7 +321,7 @@ app.post('/api/create-payment-link', async (req, res) => {
         orderId: paymentLink.orderId
       },
       pricing: {
-        subtotal: amount,
+        subtotal: validatedAmount,
         tps: tps / 100,
         tvq: tvq / 100,
         total: total / 100
@@ -199,16 +329,12 @@ app.post('/api/create-payment-link', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Payment link error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    return handleServerError(res, error, 'Payment link');
   }
 });
 
 // Process Direct Payment (with card nonce from Web Payments SDK)
-app.post('/api/process-payment', async (req, res) => {
+app.post('/api/process-payment', rateLimit({ keyPrefix: 'process-payment' }), async (req, res) => {
   try {
     const {
       sourceId, // Card nonce from Square Web Payments SDK
@@ -220,17 +346,20 @@ app.post('/api/process-payment', async (req, res) => {
       providerName
     } = req.body;
 
-    if (!sourceId || !amount) {
+    const sanitizedSourceId = sanitizeText(sourceId, 200);
+    const validatedAmount = parseAmount(amount);
+
+    if (!sanitizedSourceId || validatedAmount === null) {
       return res.status(400).json({
         success: false,
-        error: 'Source ID and amount are required'
+        error: 'Valid source ID and amount are required'
       });
     }
 
     const idempotencyKey = crypto.randomBytes(16).toString('hex');
     
     // Calculate total with taxes
-    const subtotal = Math.round(amount * 100);
+    const subtotal = Math.round(validatedAmount * 100);
     const tps = Math.round(subtotal * 0.05);
     const tvq = Math.round(subtotal * 0.09975);
     const total = subtotal + tps + tvq;
@@ -238,14 +367,14 @@ app.post('/api/process-payment', async (req, res) => {
     // Process payment
     const response = await squareClient.paymentsApi.createPayment({
       idempotencyKey,
-      sourceId,
+      sourceId: sanitizedSourceId,
       amountMoney: {
         amount: BigInt(total),
         currency: 'CAD'
       },
       locationId,
-      note: `myTROUVEpro - ${serviceName || 'Service'} | Provider: ${providerName || 'N/A'}`,
-      buyerEmailAddress: customerEmail || undefined,
+      note: `myTROUVEpro - ${sanitizeText(serviceName, 120) || 'Service'} | Provider: ${sanitizeText(providerName, 80) || 'N/A'}`,
+      buyerEmailAddress: sanitizeOptionalText(customerEmail, 254),
       referenceId: `MTP-${Date.now()}`
     });
 
@@ -261,7 +390,7 @@ app.post('/api/process-payment', async (req, res) => {
         referenceId: payment.referenceId
       },
       pricing: {
-        subtotal: amount,
+        subtotal: validatedAmount,
         tps: tps / 100,
         tvq: tvq / 100,
         total: total / 100
@@ -269,18 +398,17 @@ app.post('/api/process-payment', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Payment error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    return handleServerError(res, error, 'Payment');
   }
 });
 
 // Get Payment Status
-app.get('/api/payment/:paymentId', async (req, res) => {
+app.get('/api/payment/:paymentId', requireAdminKey, rateLimit({ keyPrefix: 'payment-status' }), async (req, res) => {
   try {
-    const { paymentId } = req.params;
+    const paymentId = sanitizeText(req.params.paymentId, 120);
+    if (!paymentId) {
+      return res.status(400).json({ success: false, error: 'Payment ID is required' });
+    }
     
     const response = await squareClient.paymentsApi.getPayment(paymentId);
     const payment = response.result.payment;
@@ -298,15 +426,12 @@ app.get('/api/payment/:paymentId', async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    return handleServerError(res, error, 'Payment status');
   }
 });
 
 // Get Recent Payments (Admin)
-app.get('/api/payments', async (req, res) => {
+app.get('/api/payments', requireAdminKey, rateLimit({ keyPrefix: 'payments-admin' }), async (req, res) => {
   try {
     const response = await squareClient.paymentsApi.listPayments({
       locationId,
@@ -332,22 +457,28 @@ app.get('/api/payments', async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    return handleServerError(res, error, 'Payments list');
   }
 });
 
 // Process Refund
-app.post('/api/refund', async (req, res) => {
+app.post('/api/refund', requireAdminKey, rateLimit({ keyPrefix: 'refund' }), async (req, res) => {
   try {
     const { paymentId, amount, reason } = req.body;
 
-    if (!paymentId) {
+    const sanitizedPaymentId = sanitizeText(paymentId, 120);
+    const validatedAmount = amount ? parseAmount(amount) : null;
+
+    if (!sanitizedPaymentId) {
       return res.status(400).json({
         success: false,
         error: 'Payment ID is required'
+      });
+    }
+    if (amount && validatedAmount === null) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid refund amount'
       });
     }
 
@@ -355,14 +486,14 @@ app.post('/api/refund', async (req, res) => {
 
     const refundRequest = {
       idempotencyKey,
-      paymentId,
-      reason: reason || 'Customer requested refund'
+      paymentId: sanitizedPaymentId,
+      reason: sanitizeText(reason, 200) || 'Customer requested refund'
     };
 
     // If partial refund
-    if (amount) {
+    if (amount && validatedAmount !== null) {
       refundRequest.amountMoney = {
-        amount: BigInt(Math.round(amount * 100)),
+        amount: BigInt(Math.round(validatedAmount * 100)),
         currency: 'CAD'
       };
     }
@@ -380,11 +511,7 @@ app.post('/api/refund', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Refund error:', error);
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    return handleServerError(res, error, 'Refund');
   }
 });
 

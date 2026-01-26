@@ -11,7 +11,7 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
   const [error, setError] = useState(null);
   const [sdkLoaded, setSdkLoaded] = useState(false);
   const cardContainerRef = useRef(null);
-  const { grandTotal, clearCart } = useCart();
+  const { grandTotal, clearCart, items, booking } = useCart();
 
   const content = {
     en: {
@@ -25,6 +25,7 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
       loadingPayment: 'Loading payment form...',
       paymentSuccess: 'Payment successful!',
       paymentError: 'Payment failed. Please try again.',
+      backendUnavailable: 'Payment service unavailable. Please try again later.',
       total: 'Total',
     },
     fr: {
@@ -38,11 +39,17 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
       loadingPayment: 'Chargement du formulaire de paiement...',
       paymentSuccess: 'Paiement réussi!',
       paymentError: 'Échec du paiement. Veuillez réessayer.',
+      backendUnavailable: 'Service de paiement indisponible. Veuillez réessayer plus tard.',
       total: 'Total',
     }
   };
 
   const t = content[language];
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+  const buildBackendUrl = (path) => {
+    if (!backendUrl) return null;
+    return `${backendUrl.replace(/\/+$/, '')}${path}`;
+  };
 
   // Load Square SDK
   useEffect(() => {
@@ -105,19 +112,48 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
       const result = await card.tokenize();
       
       if (result.status === 'OK') {
-        // In production, send this token to your backend
-        // For demo, we'll simulate a successful payment
-        console.log('Payment token:', result.token);
-        
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Success!
+        const endpoint = buildBackendUrl('/api/process-payment');
+        if (!endpoint) {
+          setError(t.backendUnavailable);
+          if (onError) onError(t.backendUnavailable);
+          return;
+        }
+
+        const customerName = `${booking?.firstName || ''} ${booking?.lastName || ''}`.trim();
+        const serviceLabel = items.length === 1
+          ? items[0]?.name || 'Service'
+          : `Booking (${items.length} services)`;
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sourceId: result.token,
+            amount: grandTotal,
+            serviceName: serviceLabel,
+            customerEmail: booking?.email || undefined,
+            customerName: customerName || undefined,
+          }),
+        });
+
+        const payload = await response.json().catch(() => null);
+        if (!response.ok || !payload?.success) {
+          const message = payload?.error || t.paymentError;
+          setError(message);
+          if (onError) onError(message);
+          return;
+        }
+
         clearCart();
         if (onSuccess) {
           onSuccess({
-            token: result.token,
-            amount: grandTotal,
+            paymentId: payload.payment?.id,
+            status: payload.payment?.status,
+            receiptUrl: payload.payment?.receiptUrl,
+            amount: payload.payment?.amount,
+            referenceId: payload.payment?.referenceId,
           });
         }
       } else {

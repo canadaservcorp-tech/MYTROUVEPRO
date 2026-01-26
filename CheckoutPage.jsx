@@ -8,6 +8,7 @@ const CheckoutPage = ({ language }) => {
   const navigate = useNavigate();
   const { items, total, gst, qst, grandTotal, itemCount, setBooking } = useCart();
   const [step, setStep] = useState(1); // 1: Info, 2: Payment, 3: Success
+  const [paymentError, setPaymentError] = useState('');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -101,13 +102,13 @@ const CheckoutPage = ({ language }) => {
     setStep(2);
   };
 
-  const handlePaymentSuccess = (paymentData) => {
-    console.log('Payment successful:', paymentData);
+  const handlePaymentSuccess = () => {
+    setPaymentError('');
     setStep(3);
   };
 
   const handlePaymentError = (error) => {
-    console.error('Payment error:', error);
+    setPaymentError(error || '');
   };
 
   // Empty cart view
@@ -369,6 +370,11 @@ const CheckoutPage = ({ language }) => {
                   <ArrowLeft size={18} className="mr-1" />
                   {t.step1}
                 </button>
+                {paymentError && (
+                  <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {paymentError}
+                  </div>
+                )}
                 <SquarePayment
                   language={language}
                   onSuccess={handlePaymentSuccess}
