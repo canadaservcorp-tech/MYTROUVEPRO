@@ -1,15 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { 
-  Calendar, 
-  Heart, 
-  Search, 
-  Clock,
-  CheckCircle,
-  MapPin,
-  Star
-} from 'lucide-react';
+import { useAuth } from './AuthContext-Supabase';
+import { Calendar, MapPin, Clock, Star, Heart, Search, CheckCircle } from 'lucide-react';
 
 const SeekerDashboard = () => {
   const { user } = useAuth();
@@ -62,7 +54,7 @@ const SeekerDashboard = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Welcome, {user?.firstName}! 👋
+              Welcome, {user?.first_name || 'User'}! 👋
             </h1>
             <p className="text-gray-500 mt-1">Find the best local services near you</p>
           </div>

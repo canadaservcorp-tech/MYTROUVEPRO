@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './AuthContext-Supabase';
 import { 
   DollarSign, 
   Calendar, 
@@ -53,9 +53,9 @@ const ProviderDashboard = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
-              Welcome back, {user?.firstName}! 👋
+              Welcome back, {user?.first_name || 'User'}! 👋
             </h1>
-            <p className="text-gray-500 mt-1">{user?.businessName}</p>
+            <p className="text-gray-500 mt-1">{user?.business_name || user?.businessName}</p>
           </div>
           <Link
             to="/my-services/add"

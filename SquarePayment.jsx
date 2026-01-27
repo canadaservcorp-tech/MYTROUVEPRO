@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { SQUARE_CONFIG, SQUARE_SDK_URL } from '../config/square';
-import { useCart } from '../context/CartContext';
+import { SQUARE_CONFIG, SQUARE_SDK_URL } from './square';
+import { useCart } from './CartContext';
 import { CreditCard, Lock, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 
-const SquarePayment = ({ language, onSuccess, onError }) => {
+const SquarePayment = ({ language, onSuccess, onError, amount }) => {
   const [card, setCard] = useState(null);
   const [payments, setPayments] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -12,6 +12,8 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
   const [sdkLoaded, setSdkLoaded] = useState(false);
   const cardContainerRef = useRef(null);
   const { grandTotal, clearCart } = useCart();
+  
+  const paymentAmount = amount || grandTotal;
 
   const content = {
     en: {
@@ -25,7 +27,7 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
       loadingPayment: 'Loading payment form...',
       paymentSuccess: 'Payment successful!',
       paymentError: 'Payment failed. Please try again.',
-      total: 'Total',
+      total: 'Amount to Pay',
     },
     fr: {
       payNow: 'Payer maintenant',
@@ -38,7 +40,7 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
       loadingPayment: 'Chargement du formulaire de paiement...',
       paymentSuccess: 'Paiement réussi!',
       paymentError: 'Échec du paiement. Veuillez réessayer.',
-      total: 'Total',
+      total: 'Montant à payer',
     }
   };
 
@@ -117,7 +119,7 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
         if (onSuccess) {
           onSuccess({
             token: result.token,
-            amount: grandTotal,
+            amount: paymentAmount,
           });
         }
       } else {
@@ -184,7 +186,7 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
       <div className="flex justify-between items-center mb-6 py-3 border-t border-gray-200">
         <span className="text-lg font-semibold text-gray-900">{t.total}</span>
         <span className="text-2xl font-bold text-blue-600">
-          ${grandTotal.toFixed(2)} CAD
+          ${paymentAmount.toFixed(2)} CAD
         </span>
       </div>
 
@@ -206,7 +208,7 @@ const SquarePayment = ({ language, onSuccess, onError }) => {
         ) : (
           <>
             <Lock size={20} className="mr-2" />
-            {t.payNow} - ${grandTotal.toFixed(2)}
+            {t.payNow} - ${paymentAmount.toFixed(2)}
           </>
         )}
       </button>

@@ -63,12 +63,14 @@ export const AuthProvider = ({ children }) => {
   // Register new user
   const register = async (userData) => {
     try {
-      const { email, password, role, ...metadata } = userData;
+      const { email, password, role, firstName, lastName, phone, city, businessName, category, description, ...rest } = userData;
       
       // Create auth user
       const { data: authData, error: authError } = await signUp(email, password, {
         role,
-        ...metadata
+        first_name: firstName,
+        last_name: lastName,
+        ...rest
       });
       
       if (authError) throw authError;
@@ -78,7 +80,10 @@ export const AuthProvider = ({ children }) => {
         id: authData.user.id,
         email,
         role,
-        ...metadata,
+        first_name: firstName,
+        last_name: lastName,
+        phone,
+        city,
         verified: false,
         profile_complete: false
       });
@@ -89,9 +94,24 @@ export const AuthProvider = ({ children }) => {
       if (role === 'provider') {
         await db.createProviderProfile({
           user_id: authData.user.id,
+          business_name: businessName,
+          business_description: description,
           commission_rate: 10.00,
           contact_hidden: true
         });
+
+        // Also create an initial service for the provider if category is selected
+        if (category) {
+          await db.createService({
+            provider_id: authData.user.id,
+            category_id: category,
+            title: businessName || `${firstName} ${lastName} Services`,
+            description: description,
+            base_price: 0,
+            price_type: 'quote',
+            active: true
+          });
+        }
       }
       
       setUser(newUser);

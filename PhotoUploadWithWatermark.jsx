@@ -213,6 +213,9 @@ const PhotoUploadWithWatermark = ({
         <p className="text-xs text-gray-500 mt-2">
           Images will be watermarked with "{watermarkText}"
         </p>
+        <p className="text-xs font-semibold text-red-500 mt-1">
+          ⚠️ Important: Do not upload photos containing mobile numbers, emails, or direct contact information.
+        </p>
       </div>
 
       {/* Image Previews */}
