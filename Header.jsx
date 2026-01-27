@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Search, Bell } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './AuthContext-Supabase';
 import UserMenu from './UserMenu';
 import AuthModal from './AuthModal';
 
-const Header = () => {
+const Header = ({ language, toggleLanguage, onCartClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
@@ -21,6 +21,23 @@ const Header = () => {
     setAuthMode('choose-role');
     setShowAuthModal(true);
   };
+
+  const t = {
+    en: {
+      search: 'Search services near you...',
+      signIn: 'Sign In',
+      joinFree: 'Join Free',
+      findServices: 'Find Services',
+      home: 'Home',
+    },
+    fr: {
+      search: 'Rechercher des services...',
+      signIn: 'Connexion',
+      joinFree: 'S\'inscrire',
+      findServices: 'Services',
+      home: 'Accueil',
+    }
+  }[language || 'en'];
 
   return (
     <>
@@ -42,7 +59,7 @@ const Header = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
                   type="text"
-                  placeholder="Search services near you..."
+                  placeholder={t.search}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
               </div>
@@ -50,6 +67,14 @@ const Header = () => {
 
             {/* Right Side */}
             <div className="flex items-center space-x-4">
+              {/* Language Switcher */}
+              <button
+                onClick={toggleLanguage}
+                className="px-3 py-1 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50"
+              >
+                {language === 'en' ? 'FR' : 'EN'}
+              </button>
+
               {isAuthenticated ? (
                 <>
                   {/* Notifications */}
@@ -67,14 +92,14 @@ const Header = () => {
                     onClick={openLogin}
                     className="hidden md:block px-4 py-2 text-gray-700 font-medium hover:text-red-600"
                   >
-                    Sign In
+                    {t.signIn}
                   </button>
                   {/* Sign Up Button */}
                   <button
                     onClick={openSignup}
                     className="px-4 py-2 bg-red-600 text-white font-semibold rounded-full hover:bg-red-700"
                   >
-                    Join Free
+                    {t.joinFree}
                   </button>
                 </>
               )}
@@ -98,7 +123,7 @@ const Header = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                 <input
                   type="text"
-                  placeholder="Search services..."
+                  placeholder={t.search}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg"
                 />
               </div>
@@ -109,14 +134,14 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
                 className="block py-2 px-3 rounded-lg hover:bg-gray-50"
               >
-                Home
+                {t.home}
               </Link>
               <Link
-                to="/search"
+                to="/services"
                 onClick={() => setIsMenuOpen(false)}
                 className="block py-2 px-3 rounded-lg hover:bg-gray-50"
               >
-                Find Services
+                {t.findServices}
               </Link>
               {!isAuthenticated && (
                 <>
@@ -124,13 +149,13 @@ const Header = () => {
                     onClick={() => { openLogin(); setIsMenuOpen(false); }}
                     className="block w-full text-left py-2 px-3 rounded-lg hover:bg-gray-50"
                   >
-                    Sign In
+                    {t.signIn}
                   </button>
                   <button
                     onClick={() => { openSignup(); setIsMenuOpen(false); }}
                     className="block w-full text-left py-2 px-3 rounded-lg bg-red-600 text-white"
                   >
-                    Join Free
+                    {t.joinFree}
                   </button>
                 </>
               )}
@@ -144,6 +169,7 @@ const Header = () => {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         initialMode={authMode}
+        language={language}
       />
     </>
   );
