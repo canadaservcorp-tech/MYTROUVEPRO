@@ -105,10 +105,6 @@ const Footer = ({ language }) => {
                 <span>Laval, Quebec, Canada</span>
               </li>
               <li className="flex items-center space-x-2">
-                <Phone size={16} />
-                <span>+1 (438) 000-0000</span>
-              </li>
-              <li className="flex items-center space-x-2">
                 <Mail size={16} />
                 <span>info@mytrouvepro.com</span>
               </li>

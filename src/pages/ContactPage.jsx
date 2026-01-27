@@ -104,16 +104,6 @@ const ContactPage = ({ language }) => {
               
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Phone className="text-blue-600" size={24} />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900">{t.phone}</h3>
-                  <p className="text-gray-600">{t.phoneValue}</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Mail className="text-blue-600" size={24} />
                 </div>
                 <div>
