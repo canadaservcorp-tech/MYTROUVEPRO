@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Search, Bell } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './AuthContext-Supabase';
 import UserMenu from './UserMenu';
 import AuthModal from './AuthModal';
 
