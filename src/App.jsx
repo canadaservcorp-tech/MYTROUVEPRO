@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext-Supabase';
+import { AuthProvider } from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -8,6 +8,8 @@ import ServicesPage from './pages/ServicesPage';
 import ProvidersPage from './pages/ProvidersPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
 
 function App() {
   const [language, setLanguage] = useState('en');
@@ -20,8 +22,8 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="min-h-screen flex flex-col bg-gray-50">
-          <Header 
-            language={language} 
+          <Header
+            language={language}
             toggleLanguage={toggleLanguage}
           />
           <main className="flex-1">
@@ -32,6 +34,8 @@ function App() {
               <Route path="/providers" element={<ProvidersPage language={language} />} />
               <Route path="/about" element={<AboutPage language={language} />} />
               <Route path="/contact" element={<ContactPage language={language} />} />
+              <Route path="/privacy" element={<PrivacyPage language={language} />} />
+              <Route path="/terms" element={<TermsPage language={language} />} />
               <Route path="*" element={<HomePage language={language} />} />
             </Routes>
           </main>

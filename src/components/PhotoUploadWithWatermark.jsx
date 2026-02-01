@@ -5,8 +5,8 @@ import { Upload, X, Image as ImageIcon } from 'lucide-react';
  * PhotoUploadWithWatermark Component
  * Automatically adds myTROUVEpro watermark to uploaded images
  */
-const PhotoUploadWithWatermark = ({ 
-  onUploadComplete, 
+const PhotoUploadWithWatermark = ({
+  onUploadComplete,
   maxFiles = 5,
   watermarkText = 'myTROUVEpro',
   watermarkPosition = 'bottom-right' // top-left, top-right, bottom-left, bottom-right, center
@@ -91,7 +91,7 @@ const PhotoUploadWithWatermark = ({
           canvas.toBlob((blob) => {
             if (blob) {
               const watermarkedFile = new File(
-                [blob], 
+                [blob],
                 file.name.replace(/\.(jpg|jpeg|png)$/i, '_watermarked.$1'),
                 { type: file.type }
               );
