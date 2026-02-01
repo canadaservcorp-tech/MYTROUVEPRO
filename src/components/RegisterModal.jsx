@@ -1,29 +1,42 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) => {
   const { register } = useAuth();
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    phone: '',
-    password: '',
+    city: '',
     businessName: '',
-    service: '',
+    serviceCategory: '',
+    password: '',
+    confirmPassword: '',
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const content = {
     en: {
       title: 'Sign Up',
-      name: 'Full Name',
+      firstName: 'First Name',
+      lastName: 'Last Name',
       email: 'Email',
-      phone: 'Phone',
+      city: 'City',
       password: 'Password',
+      confirmPassword: 'Confirm Password',
       businessName: 'Business Name',
-      service: 'Service',
-      submit: 'Create Account',
+      serviceCategory: 'Service Category',
+      termsPrefix: 'I accept the',
+      termsLink: 'Terms and Conditions',
+      submit: 'Register',
+      submitting: 'Registering...',
+      success: 'Registration successful! You can now sign in.',
+      termsError: 'Please accept the Terms and Conditions.',
+      passwordMismatch: 'Passwords do not match.',
       cancel: 'Cancel',
       switchPrompt: 'Already have an account?',
       switchAction: 'Sign In',
@@ -31,13 +44,21 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
     },
     fr: {
       title: 'Inscription',
-      name: 'Nom complet',
+      firstName: 'Prénom',
+      lastName: 'Nom',
       email: 'Courriel',
-      phone: 'Téléphone',
+      city: 'Ville',
       password: 'Mot de passe',
+      confirmPassword: 'Confirmer le mot de passe',
       businessName: 'Nom de l\'entreprise',
-      service: 'Service',
-      submit: 'Créer un compte',
+      serviceCategory: 'Catégorie de service',
+      termsPrefix: 'J\'accepte les',
+      termsLink: 'Conditions générales',
+      submit: 'S\'inscrire',
+      submitting: 'Inscription en cours...',
+      success: 'Inscription réussie! Vous pouvez vous connecter.',
+      termsError: 'Veuillez accepter les conditions générales.',
+      passwordMismatch: 'Les mots de passe ne correspondent pas.',
       cancel: 'Annuler',
       switchPrompt: 'Déjà un compte?',
       switchAction: 'Connexion',
@@ -50,15 +71,19 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
   useEffect(() => {
     if (isOpen) {
       setFormData({
-        name: '',
+        firstName: '',
+        lastName: '',
         email: '',
-        phone: '',
-        password: '',
+        city: '',
         businessName: '',
-        service: '',
+        serviceCategory: '',
+        password: '',
+        confirmPassword: '',
       });
       setError('');
+      setSuccess('');
       setSubmitting(false);
+      setTermsAccepted(false);
     }
   }, [isOpen]);
 
@@ -71,11 +96,28 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setSubmitting(true);
     setError('');
+    setSuccess('');
+
+    if (!termsAccepted) {
+      setError(t.termsError);
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError(t.passwordMismatch);
+      return;
+    }
+
+    setSubmitting(true);
 
     const payload = {
-      ...formData,
+      name: `${formData.firstName} ${formData.lastName}`.trim(),
+      email: formData.email,
+      password: formData.password,
+      businessName: formData.businessName,
+      service: formData.serviceCategory,
+      city: formData.city,
       role: 'provider',
     };
 
@@ -87,7 +129,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
     }
 
     setSubmitting(false);
-    onClose();
+    setSuccess(t.success);
   };
 
   return (
@@ -97,7 +139,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
       aria-modal="true"
     >
       <div
-        className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl"
+        className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[85vh] overflow-y-auto"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -117,24 +159,46 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
             {error}
           </div>
         )}
+        {success && (
+          <div className="mb-4 rounded-lg bg-green-50 px-4 py-2 text-sm text-green-700">
+            {success}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t.name}
+                {t.firstName}
               </label>
               <input
                 type="text"
-                name="name"
-                value={formData.name}
+                name="firstName"
+                value={formData.firstName}
                 onChange={handleChange}
                 required
-                autoComplete="name"
+                autoComplete="given-name"
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t.lastName}
+              </label>
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+                autoComplete="family-name"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t.email}
@@ -149,34 +213,17 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
               />
             </div>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t.phone}
-              </label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                autoComplete="tel"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t.password}
+                {t.city}
               </label>
               <input
-                type="password"
-                name="password"
-                value={formData.password}
+                type="text"
+                name="city"
+                value={formData.city}
                 onChange={handleChange}
-                required
-                autoComplete="new-password"
+                autoComplete="address-level2"
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -198,24 +245,72 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t.service}
+                {t.serviceCategory}
               </label>
               <input
                 type="text"
-                name="service"
-                value={formData.service}
+                name="serviceCategory"
+                value={formData.serviceCategory}
                 onChange={handleChange}
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
 
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t.password}
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                autoComplete="new-password"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t.confirmPassword}
+              </label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                autoComplete="new-password"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          <label className="flex items-start gap-3 text-sm text-gray-600">
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={(event) => setTermsAccepted(event.target.checked)}
+              required
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+            />
+            <span>
+              {t.termsPrefix}{' '}
+              <Link to="/terms" className="font-semibold text-green-700 hover:text-green-800">
+                {t.termsLink}
+              </Link>
+            </span>
+          </label>
+
           <button
             type="submit"
-            disabled={submitting}
-            className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+            disabled={!termsAccepted || submitting}
+            className="w-full rounded-lg bg-green-600 py-3 font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {submitting ? `${t.submit}...` : t.submit}
+            {submitting ? t.submitting : t.submit}
           </button>
         </form>
 
