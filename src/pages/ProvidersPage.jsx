@@ -57,10 +57,10 @@ const ProvidersPage = ({ language }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-blue-900 text-white py-12">
+      <div className="bg-[#2c2c2c] text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-3xl font-bold mb-2">{t.title}</h1>
-          <p className="text-blue-200">{t.subtitle}</p>
+          <p className="text-gray-300">{t.subtitle}</p>
         </div>
       </div>
 
@@ -75,13 +75,13 @@ const ProvidersPage = ({ language }) => {
                 placeholder={t.searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c41e3a]"
               />
             </div>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c41e3a]"
             >
               <option value="rating">{t.rating}</option>
               <option value="reviews">{t.reviews}</option>
@@ -108,7 +108,7 @@ const ProvidersPage = ({ language }) => {
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-lg text-gray-900">{provider.name}</h3>
-                <p className="text-blue-600 text-sm">{provider.category}</p>
+                <p className="text-[#c41e3a] text-sm">{provider.category}</p>
                 <div className="flex items-center mt-2 text-sm">
                   <Star className="text-yellow-400 fill-yellow-400" size={16} />
                   <span className="ml-1 font-medium">{provider.rating}</span>
@@ -120,7 +120,7 @@ const ProvidersPage = ({ language }) => {
                 </div>
                 <Link
                   to={`/providers/${provider.id}`}
-                  className="mt-4 block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-colors"
+                  className="mt-4 block text-center bg-[#c41e3a] hover:bg-[#a0182f] text-white py-2 rounded-lg font-medium transition-colors"
                 >
                   {t.viewProfile}
                 </Link>

@@ -103,7 +103,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister, language = 'en' }) =>
               onChange={handleChange}
               required
               autoComplete="email"
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[#c41e3a] focus:ring-2 focus:ring-[#c41e3a]"
             />
           </div>
 
@@ -118,14 +118,14 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister, language = 'en' }) =>
               onChange={handleChange}
               required
               autoComplete="current-password"
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[#c41e3a] focus:ring-2 focus:ring-[#c41e3a]"
             />
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-lg bg-[#c41e3a] py-3 font-semibold text-white transition-colors hover:bg-[#a0182f] disabled:cursor-not-allowed disabled:opacity-70"
           >
             {submitting ? `${t.submit}...` : t.submit}
           </button>
@@ -143,7 +143,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToRegister, language = 'en' }) =>
             <button
               type="button"
               onClick={onSwitchToRegister}
-              className="font-semibold text-blue-600 hover:text-blue-700"
+              className="font-semibold text-[#c41e3a] hover:text-[#a0182f]"
             >
               {t.switchPrompt} {t.switchAction}
             </button>

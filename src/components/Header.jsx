@@ -63,7 +63,7 @@ const Header = ({ language, toggleLanguage }) => {
     <>
       <header className="bg-white shadow-md sticky top-0 z-40">
         {/* Top bar */}
-        <div className="bg-blue-900 text-white py-2">
+        <div className="bg-[#2c2c2c] text-white py-2">
           <div className="max-w-7xl mx-auto px-4 flex justify-between items-center text-sm">
             <div className="flex items-center space-x-2">
               <MapPin size={14} />
@@ -71,7 +71,7 @@ const Header = ({ language, toggleLanguage }) => {
             </div>
             <button
               onClick={toggleLanguage}
-              className="flex items-center space-x-1 hover:text-blue-200 transition-colors"
+              className="flex items-center space-x-1 hover:text-gray-200 transition-colors"
             >
               <Globe size={14} />
               <span>{language === 'en' ? 'FR' : 'EN'}</span>
@@ -83,13 +83,26 @@ const Header = ({ language, toggleLanguage }) => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">mT</span>
-              </div>
+            <Link to="/" className="flex items-center space-x-3">
+              <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+                <rect width="44" height="44" rx="10" fill="#2c2c2c" />
+                <circle cx="22" cy="22" r="8" fill="#c41e3a" />
+                <circle cx="22" cy="22" r="3" fill="#fff" />
+                <circle cx="10" cy="10" r="3" fill="#888" />
+                <circle cx="34" cy="10" r="3" fill="#888" />
+                <circle cx="10" cy="34" r="3" fill="#888" />
+                <circle cx="34" cy="34" r="3" fill="#888" />
+                <line x1="12" y1="12" x2="18" y2="18" stroke="#c41e3a" strokeWidth="1.5" />
+                <line x1="32" y1="12" x2="26" y2="18" stroke="#c41e3a" strokeWidth="1.5" />
+                <line x1="12" y1="32" x2="18" y2="26" stroke="#c41e3a" strokeWidth="1.5" />
+                <line x1="32" y1="32" x2="26" y2="26" stroke="#c41e3a" strokeWidth="1.5" />
+              </svg>
               <div>
-                <span className="text-xl font-bold text-blue-900">myTROUVE</span>
-                <span className="text-xl font-bold text-green-500">pro</span>
+                <div>
+                  <span className="text-xl font-bold" style={{ color: '#2c2c2c' }}>my</span>
+                  <span className="text-xl font-bold" style={{ color: '#c41e3a' }}>TROUVE</span>
+                  <span className="text-xl font-bold" style={{ color: '#2c2c2c' }}>pro</span>
+                </div>
                 <p className="text-xs text-gray-500 -mt-1">{t.slogan}</p>
               </div>
             </Link>
@@ -101,7 +114,7 @@ const Header = ({ language, toggleLanguage }) => {
                 <input
                   type="text"
                   placeholder={t.search}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c41e3a] focus:border-transparent"
                 />
               </div>
             </div>
@@ -114,8 +127,8 @@ const Header = ({ language, toggleLanguage }) => {
                   to={link.path}
                   className={`font-medium transition-colors ${
                     location.pathname === link.path
-                      ? 'text-blue-600'
-                      : 'text-gray-700 hover:text-blue-600'
+                      ? 'text-[#c41e3a]'
+                      : 'text-gray-700 hover:text-[#c41e3a]'
                   }`}
                 >
                   {link.label}
@@ -128,14 +141,14 @@ const Header = ({ language, toggleLanguage }) => {
               <button
                 type="button"
                 onClick={openLogin}
-                className="text-sm font-medium text-gray-700 hover:text-blue-600"
+                className="text-sm font-medium text-gray-700 hover:text-[#c41e3a]"
               >
                 {t.signIn}
               </button>
               <button
                 type="button"
                 onClick={openRegister}
-                className="text-sm font-semibold bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="text-sm font-semibold bg-[#c41e3a] text-white px-4 py-2 rounded-lg hover:bg-[#a0182f] transition-colors"
               >
                 {t.signUp}
               </button>
@@ -172,7 +185,7 @@ const Header = ({ language, toggleLanguage }) => {
                   onClick={() => setIsMenuOpen(false)}
                   className={`block py-2 px-3 rounded-lg ${
                     location.pathname === link.path
-                      ? 'bg-blue-50 text-blue-600'
+                      ? 'bg-gray-100 text-[#c41e3a]'
                       : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
@@ -190,7 +203,7 @@ const Header = ({ language, toggleLanguage }) => {
                 <button
                   type="button"
                   onClick={openRegister}
-                  className="w-full text-left py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                  className="w-full text-left py-2 px-3 rounded-lg bg-[#c41e3a] text-white hover:bg-[#a0182f]"
                 >
                   {t.signUp}
                 </button>

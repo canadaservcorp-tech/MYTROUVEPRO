@@ -178,7 +178,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
                 onChange={handleChange}
                 required
                 autoComplete="given-name"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[#c41e3a] focus:ring-2 focus:ring-[#c41e3a]"
               />
             </div>
 
@@ -193,7 +193,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
                 onChange={handleChange}
                 required
                 autoComplete="family-name"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[#c41e3a] focus:ring-2 focus:ring-[#c41e3a]"
               />
             </div>
           </div>
@@ -210,7 +210,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
                 onChange={handleChange}
                 required
                 autoComplete="email"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[#c41e3a] focus:ring-2 focus:ring-[#c41e3a]"
               />
             </div>
 
@@ -224,7 +224,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
                 value={formData.city}
                 onChange={handleChange}
                 autoComplete="address-level2"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[#c41e3a] focus:ring-2 focus:ring-[#c41e3a]"
               />
             </div>
           </div>
@@ -239,7 +239,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
                 name="businessName"
                 value={formData.businessName}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[#c41e3a] focus:ring-2 focus:ring-[#c41e3a]"
               />
             </div>
 
@@ -252,7 +252,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
                 name="serviceCategory"
                 value={formData.serviceCategory}
                 onChange={handleChange}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[#c41e3a] focus:ring-2 focus:ring-[#c41e3a]"
               />
             </div>
           </div>
@@ -269,7 +269,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
                 onChange={handleChange}
                 required
                 autoComplete="new-password"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[#c41e3a] focus:ring-2 focus:ring-[#c41e3a]"
               />
             </div>
 
@@ -284,7 +284,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
                 onChange={handleChange}
                 required
                 autoComplete="new-password"
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-[#c41e3a] focus:ring-2 focus:ring-[#c41e3a]"
               />
             </div>
           </div>
@@ -326,7 +326,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
             <button
               type="button"
               onClick={onSwitchToLogin}
-              className="font-semibold text-blue-600 hover:text-blue-700"
+              className="font-semibold text-[#c41e3a] hover:text-[#a0182f]"
             >
               {t.switchPrompt} {t.switchAction}
             </button>

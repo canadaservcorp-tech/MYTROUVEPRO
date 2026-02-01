@@ -78,10 +78,10 @@ const ContactPage = ({ language }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
-      <div className="bg-blue-900 text-white py-16">
+      <div className="bg-[#2c2c2c] text-white py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">{t.title}</h1>
-          <p className="text-xl text-blue-200">{t.subtitle}</p>
+          <p className="text-xl text-gray-300">{t.subtitle}</p>
         </div>
       </div>
 
@@ -93,8 +93,8 @@ const ContactPage = ({ language }) => {
             
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <MapPin className="text-blue-600" size={24} />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <MapPin className="text-[#c41e3a]" size={24} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">{t.address}</h3>
@@ -103,8 +103,8 @@ const ContactPage = ({ language }) => {
               </div>
               
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Phone className="text-blue-600" size={24} />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Phone className="text-[#c41e3a]" size={24} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">{t.phone}</h3>
@@ -113,8 +113,8 @@ const ContactPage = ({ language }) => {
               </div>
               
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Mail className="text-blue-600" size={24} />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Mail className="text-[#c41e3a]" size={24} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">{t.email}</h3>
@@ -123,8 +123,8 @@ const ContactPage = ({ language }) => {
               </div>
               
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Clock className="text-blue-600" size={24} />
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Clock className="text-[#c41e3a]" size={24} />
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">{t.hours}</h3>
@@ -153,7 +153,7 @@ const ContactPage = ({ language }) => {
                     setSubmitted(false);
                     setFormData({ name: '', email: '', subject: '', message: '' });
                   }}
-                  className="text-blue-600 hover:text-blue-800 font-medium"
+                  className="text-[#c41e3a] hover:text-[#a0182f] font-medium"
                 >
                   {t.sendAnother}
                 </button>
@@ -170,7 +170,7 @@ const ContactPage = ({ language }) => {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c41e3a] focus:border-transparent"
                     />
                   </div>
                   
@@ -182,7 +182,7 @@ const ContactPage = ({ language }) => {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c41e3a] focus:border-transparent"
                     />
                   </div>
                   
@@ -194,7 +194,7 @@ const ContactPage = ({ language }) => {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c41e3a] focus:border-transparent"
                     />
                   </div>
                   
@@ -206,13 +206,13 @@ const ContactPage = ({ language }) => {
                       onChange={handleChange}
                       required
                       rows={5}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c41e3a] focus:border-transparent resize-none"
                     ></textarea>
                   </div>
                   
                   <button
                     type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center"
+                    className="w-full bg-[#c41e3a] hover:bg-[#a0182f] text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center"
                   >
                     <Send size={18} className="mr-2" />
                     {t.send}

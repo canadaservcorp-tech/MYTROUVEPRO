@@ -106,14 +106,14 @@ const HomePage = ({ language }) => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white py-20">
+      <section className="bg-gradient-to-br from-[#2c2c2c] via-[#3a3a3a] to-[#2c2c2c] text-white py-20">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
             {t.heroTitle}
             <br />
             <span className="text-green-400">{t.heroHighlight}</span>
           </h1>
-          <p className="text-xl text-blue-200 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             {t.heroSubtitle}
           </p>
 
@@ -125,7 +125,7 @@ const HomePage = ({ language }) => {
                 <input
                   type="text"
                   placeholder={t.searchPlaceholder}
-                  className="w-full pl-12 pr-4 py-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-12 pr-4 py-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#c41e3a]"
                 />
               </div>
               <div className="relative md:w-48">
@@ -133,7 +133,7 @@ const HomePage = ({ language }) => {
                 <input
                   type="text"
                   placeholder={t.locationPlaceholder}
-                  className="w-full pl-12 pr-4 py-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-12 pr-4 py-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#c41e3a]"
                 />
               </div>
               <button className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-semibold transition-colors">
@@ -157,10 +157,10 @@ const HomePage = ({ language }) => {
               <Link
                 key={category.id}
                 to={`/services/${category.id}`}
-                className="bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-xl p-6 text-center transition-all group"
+                className="bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-[#c41e3a] rounded-xl p-6 text-center transition-all group"
               >
                 <span className="text-4xl block mb-3">{category.icon}</span>
-                <h3 className="font-semibold text-gray-900 group-hover:text-blue-600">{category.name}</h3>
+                <h3 className="font-semibold text-gray-900 group-hover:text-[#c41e3a]">{category.name}</h3>
                 <p className="text-sm text-gray-500">{category.count} {language === 'en' ? 'providers' : 'fournisseurs'}</p>
               </Link>
             ))}
@@ -175,8 +175,8 @@ const HomePage = ({ language }) => {
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl p-8 text-center shadow-sm">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="text-blue-600" size={32} />
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Shield className="text-[#c41e3a]" size={32} />
               </div>
               <h3 className="text-xl font-semibold mb-2">{t.whyVerified}</h3>
               <p className="text-gray-600">{t.whyVerifiedDesc}</p>
@@ -209,7 +209,7 @@ const HomePage = ({ language }) => {
               <h2 className="text-3xl font-bold text-gray-900">{t.featuredTitle}</h2>
               <p className="text-gray-600">{t.featuredSubtitle}</p>
             </div>
-            <Link to="/providers" className="text-blue-600 hover:text-blue-800 font-medium flex items-center">
+            <Link to="/providers" className="text-[#c41e3a] hover:text-[#a0182f] font-medium flex items-center">
               {t.viewAll} <ArrowRight size={18} className="ml-1" />
             </Link>
           </div>

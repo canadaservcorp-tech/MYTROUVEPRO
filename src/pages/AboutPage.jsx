@@ -58,10 +58,10 @@ const AboutPage = ({ language }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero */}
-      <div className="bg-blue-900 text-white py-16">
+      <div className="bg-[#2c2c2c] text-white py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">{t.title}</h1>
-          <p className="text-xl text-blue-200">{t.subtitle}</p>
+          <p className="text-xl text-gray-300">{t.subtitle}</p>
         </div>
       </div>
 
@@ -91,8 +91,8 @@ const AboutPage = ({ language }) => {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {t.values.map((value, idx) => (
               <div key={idx} className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <value.icon className="text-blue-600" size={32} />
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <value.icon className="text-[#c41e3a]" size={32} />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{value.title}</h3>
                 <p className="text-gray-600">{value.desc}</p>
@@ -103,11 +103,11 @@ const AboutPage = ({ language }) => {
       </section>
 
       {/* Team / Company */}
-      <section className="py-16 bg-blue-900 text-white">
+      <section className="py-16 bg-[#2c2c2c] text-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">{t.teamTitle}</h2>
-          <p className="text-xl text-blue-200 mb-4">{t.teamText}</p>
-          <p className="text-blue-300">{t.neq}</p>
+          <p className="text-xl text-gray-300 mb-4">{t.teamText}</p>
+          <p className="text-gray-300">{t.neq}</p>
         </div>
       </section>
     </div>

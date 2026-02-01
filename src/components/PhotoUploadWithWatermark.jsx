@@ -195,11 +195,11 @@ const PhotoUploadWithWatermark = ({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading || images.length >= maxFiles}
-          className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#c41e3a] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {uploading ? (
             <>
-              <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-500 border-t-transparent mr-2" />
+              <div className="animate-spin rounded-full h-5 w-5 border-2 border-[#c41e3a] border-t-transparent mr-2" />
               Processing images...
             </>
           ) : (
@@ -236,7 +236,7 @@ const PhotoUploadWithWatermark = ({
               </button>
               
               {/* Watermark indicator */}
-              <div className="absolute bottom-1 left-1 bg-blue-500 text-white text-xs px-2 py-0.5 rounded">
+              <div className="absolute bottom-1 left-1 bg-[#c41e3a] text-white text-xs px-2 py-0.5 rounded">
                 ✓ Watermarked
               </div>
             </div>

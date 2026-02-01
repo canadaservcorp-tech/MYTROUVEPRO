@@ -150,10 +150,10 @@ const ServicesPage = ({ language }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-blue-900 text-white py-12">
+      <div className="bg-[#2c2c2c] text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-3xl font-bold mb-2">{t.title}</h1>
-          <p className="text-blue-200">{t.subtitle}</p>
+          <p className="text-gray-300">{t.subtitle}</p>
         </div>
       </div>
 
@@ -170,7 +170,7 @@ const ServicesPage = ({ language }) => {
                     to={cat.id === 'all' ? '/services' : `/services/${cat.id}`}
                     className={`flex items-center px-3 py-2 rounded-lg transition-colors ${
                       (category === cat.id || (!category && cat.id === 'all'))
-                        ? 'bg-blue-50 text-blue-700'
+                        ? 'bg-gray-100 text-[#c41e3a]'
                         : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
@@ -194,7 +194,7 @@ const ServicesPage = ({ language }) => {
                     placeholder={t.searchPlaceholder}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#c41e3a] focus:border-transparent"
                   />
                 </div>
                 <button className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50">
@@ -225,7 +225,7 @@ const ServicesPage = ({ language }) => {
                       <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
                         <div>
                           <h3 className="text-xl font-semibold text-gray-900">{provider.name}</h3>
-                          <p className="text-blue-600">{provider.categoryName}</p>
+                          <p className="text-[#c41e3a]">{provider.categoryName}</p>
                         </div>
                         {provider.verified && (
                           <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm flex items-center">
@@ -255,7 +255,7 @@ const ServicesPage = ({ language }) => {
                       <div className="mt-4">
                         <Link
                           to={`/providers/${provider.id}`}
-                          className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                          className="inline-block bg-[#c41e3a] hover:bg-[#a0182f] text-white px-6 py-2 rounded-lg font-medium transition-colors"
                         >
                           {t.viewProfile}
                         </Link>
