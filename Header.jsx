@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Search, Bell } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './AuthContext-Supabase';
 import UserMenu from './UserMenu';
 import AuthModal from './AuthModal';
 
@@ -28,7 +28,8 @@ const Header = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center gap-2">
+              <img src="/favicon.svg" alt="myTROUVEpro Logo" className="h-8 w-8" />
               <span className="text-2xl font-bold">
                 <span className="text-gray-900">my</span>
                 <span className="text-red-600">TROUVE</span>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, User, Phone, MapPin, Eye, EyeOff, Briefcase, Users } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { X, Mail, Lock, User, MapPin, Eye, EyeOff, Briefcase, Users } from 'lucide-react';
+import { useAuth } from './AuthContext-Supabase';
 
 const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const { login, register } = useAuth();
@@ -299,21 +299,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      required
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
-                      placeholder="(514) 555-0123"
-                    />
-                  </div>
-                </div>
+
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
