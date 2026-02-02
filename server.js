@@ -7,7 +7,7 @@
 
 import express from 'express';
 import cors from 'cors';
-import { Client, Environment } from 'square';
+import square from 'square';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -43,6 +43,8 @@ app.use(express.json());
 // SQUARE CONFIGURATION
 // ============================================
 const isProduction = process.env.SQUARE_ENVIRONMENT === 'production';
+
+const { Client, Environment } = square;
 
 const squareClient = new Client({
   accessToken: process.env.SQUARE_ACCESS_TOKEN,
