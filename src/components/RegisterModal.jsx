@@ -139,7 +139,7 @@ const RegisterModal = ({ isOpen, onClose, onSwitchToLogin, language = 'en' }) =>
       aria-modal="true"
     >
       <div
-        className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[85vh] overflow-y-auto"
+        className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">

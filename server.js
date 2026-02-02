@@ -5,11 +5,15 @@
 // NEQ: 2280629637
 // ============================================
 
-const express = require('express');
-const cors = require('cors');
-const { Client, Environment } = require('square');
-const crypto = require('crypto');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import { Client, Environment } from 'square';
+import crypto from 'crypto';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
@@ -47,23 +51,37 @@ const squareClient = new Client({
 
 const locationId = process.env.SQUARE_LOCATION_ID;
 const appId = process.env.SQUARE_APPLICATION_ID;
+const JWT_SECRET = process.env.JWT_SECRET || 'mytrouvepro-dev-secret';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+const BCRYPT_SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
 
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
 function generateToken(user) {
-  // Simple token generation (use JWT in production)
-  const payload = {
-    id: user.id,
-    email: user.email,
-    role: user.role,
-    timestamp: Date.now()
-  };
-  return Buffer.from(JSON.stringify(payload)).toString('base64');
+  return jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+      role: user.role
+    },
+    JWT_SECRET,
+    { expiresIn: JWT_EXPIRES_IN }
+  );
 }
 
-function hashPassword(password) {
-  return crypto.createHash('sha256').update(password).digest('hex');
+function sanitizeUser(user) {
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    phone: user.phone,
+    businessName: user.businessName,
+    service: user.service,
+    createdAt: user.createdAt,
+    status: user.status
+  };
 }
 
 // ============================================
@@ -79,12 +97,19 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // ============================================
 // AUTH ENDPOINTS
 // ============================================
 
 // Register User (Seeker or Provider)
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name, phone, role, businessName, service } = req.body;
 
@@ -96,8 +121,18 @@ app.post('/api/auth/register', (req, res) => {
       });
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+    const trimmedName = name.trim();
+
+    if (!normalizedEmail || !trimmedName) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing fields: email, password, and name are required'
+      });
+    }
+
     // Check if email exists
-    const existingUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const existingUser = users.find(u => u.email === normalizedEmail);
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -113,14 +148,20 @@ app.post('/api/auth/register', (req, res) => {
       });
     }
 
+    const allowedRoles = ['customer', 'provider'];
+    const normalizedRoleValue = typeof role === 'string' ? role.toLowerCase() : '';
+    const normalizedRole = allowedRoles.includes(normalizedRoleValue)
+      ? normalizedRoleValue
+      : 'customer';
+
     // Create user
     const user = {
       id: userIdCounter++,
-      email: email.toLowerCase(),
-      password: hashPassword(password),
-      name,
+      email: normalizedEmail,
+      passwordHash: await bcrypt.hash(password, BCRYPT_SALT_ROUNDS),
+      name: trimmedName,
       phone: phone || '',
-      role: role || 'user', // 'user' (seeker) or 'provider'
+      role: normalizedRole,
       businessName: businessName || '',
       service: service || '',
       createdAt: new Date().toISOString(),
@@ -132,13 +173,10 @@ app.post('/api/auth/register', (req, res) => {
     // Generate token
     const token = generateToken(user);
 
-    // Return success (exclude password)
-    const { password: _, ...safeUser } = user;
-
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       token,
-      user: safeUser
+      user: sanitizeUser(user)
     });
 
   } catch (error) {
@@ -151,7 +189,7 @@ app.post('/api/auth/register', (req, res) => {
 });
 
 // Login User
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -162,8 +200,16 @@ app.post('/api/auth/login', (req, res) => {
       });
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email and password are required'
+      });
+    }
+
     // Find user
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const user = users.find(u => u.email === normalizedEmail);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -172,7 +218,8 @@ app.post('/api/auth/login', (req, res) => {
     }
 
     // Check password
-    if (user.password !== hashPassword(password)) {
+    const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+    if (!passwordMatches) {
       return res.status(401).json({
         success: false,
         error: 'Invalid credentials'
@@ -182,13 +229,10 @@ app.post('/api/auth/login', (req, res) => {
     // Generate token
     const token = generateToken(user);
 
-    // Return success
-    const { password: _, ...safeUser } = user;
-
-    res.json({
+    res.status(200).json({
       success: true,
       token,
-      user: safeUser
+      user: sanitizeUser(user)
     });
 
   } catch (error) {
@@ -212,7 +256,7 @@ app.get('/api/auth/me', (req, res) => {
     }
 
     const token = authHeader.split(' ')[1];
-    const payload = JSON.parse(Buffer.from(token, 'base64').toString());
+    const payload = jwt.verify(token, JWT_SECRET);
 
     const user = users.find(u => u.id === payload.id);
     if (!user) {
@@ -222,8 +266,10 @@ app.get('/api/auth/me', (req, res) => {
       });
     }
 
-    const { password: _, ...safeUser } = user;
-    res.json(safeUser);
+    res.json({
+      success: true,
+      user: sanitizeUser(user)
+    });
 
   } catch (error) {
     res.status(401).json({
@@ -430,6 +476,7 @@ app.listen(PORT, () => {
 ╠══════════════════════════════════════════════════════════════╣
 ║  ENDPOINTS:                                                  ║
 ║  GET  /                        - Health check                ║
+║  GET  /api/health              - Service health              ║
 ║  GET  /api/test                - Test Square connection      ║
 ║  GET  /api/config              - Get Square config           ║
 ║  POST /api/auth/register       - Register user               ║
@@ -445,4 +492,4 @@ app.listen(PORT, () => {
   `);
 });
 
-module.exports = app;
+export default app;
