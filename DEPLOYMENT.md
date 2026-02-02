@@ -6,15 +6,10 @@
 Create a `.env` file with:
 
 ```
-# Square Configuration
-SQUARE_ACCESS_TOKEN=your_square_access_token_here
-SQUARE_APPLICATION_ID=your_square_app_id_here
-SQUARE_LOCATION_ID=your_square_location_id_here
-SQUARE_ENVIRONMENT=sandbox
-
 # Server
 PORT=3001
 NODE_ENV=production
+JWT_SECRET=your_long_random_secret
 
 # CORS Origins
 FRONTEND_URL=https://mytrouvepro11.netlify.app
@@ -36,7 +31,6 @@ FRONTEND_URL=https://mytrouvepro11.netlify.app
 4. **Add Environment Variables**
    - Go to Variables tab
    - Add all variables from .env file
-   - **IMPORTANT:** Use PRODUCTION Square credentials when ready
 
 5. **Configure Start Command**
    - Settings → Deploy
@@ -60,11 +54,10 @@ VITE_BACKEND_URL=https://your-railway-url.up.railway.app
 # Test health check
 curl https://your-railway-url.up.railway.app/
 
-# Test Square connection
-curl https://your-railway-url.up.railway.app/api/test
-
-# Test config
-curl https://your-railway-url.up.railway.app/api/config
+# Test registration
+curl -X POST https://your-railway-url.up.railway.app/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"SecurePass123!","name":"Test User","role":"customer"}'
 ```
 
 ---
@@ -84,23 +77,6 @@ curl https://your-railway-url.up.railway.app/api/config
 
 ---
 
-## Alternative: Vercel Serverless
-
-Create `api/` folder with serverless functions:
-
-**api/create-payment.js:**
-```javascript
-const { Client, Environment } = require('square');
-
-module.exports = async (req, res) => {
-  // Your Square payment logic
-};
-```
-
-Deploy: `vercel --prod`
-
----
-
 ## DNS Configuration (Optional)
 
 If you have a custom domain:
@@ -117,10 +93,7 @@ If you have a custom domain:
 
 ## Environment Variables Checklist
 
-- [ ] SQUARE_ACCESS_TOKEN
-- [ ] SQUARE_APPLICATION_ID  
-- [ ] SQUARE_LOCATION_ID
-- [ ] SQUARE_ENVIRONMENT (sandbox or production)
+- [ ] JWT_SECRET
 - [ ] PORT (usually 3001)
 - [ ] FRONTEND_URL (your Netlify URL)
 
@@ -136,19 +109,11 @@ After deployment, verify:
    ```
    Should return: `{"status":"online",...}`
 
-2. **Square Connection:**
+2. **Auth Health:**
    ```bash
-   curl https://your-backend-url/api/test
+   curl https://your-backend-url/api/health
    ```
-   Should return: `{"success":true,"location":{...}}`
-
-3. **CORS:**
-   From browser console on Netlify site:
-   ```javascript
-   fetch('https://your-backend-url/api/config')
-     .then(r => r.json())
-     .then(console.log)
-   ```
+   Should return: `{"status":"ok"}`
 
 ---
 
@@ -166,8 +131,6 @@ After deployment, verify:
 
 ## Next Steps After Deployment
 
-1. Update SquarePayment.jsx to use new backend URL
-2. Test payment flow end-to-end
-3. Monitor logs in Railway dashboard
-4. Set up error tracking (Sentry)
-5. Configure auto-deploy on git push
+1. Monitor logs in Railway dashboard
+2. Set up error tracking (Sentry)
+3. Configure auto-deploy on git push

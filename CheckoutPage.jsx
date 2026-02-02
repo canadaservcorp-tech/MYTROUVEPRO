@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useCart } from './CartContext';
-import SquarePayment from './SquarePayment';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, ShoppingCart, User, Mail, Phone, MapPin, Calendar, Clock } from 'lucide-react';
+import { ArrowLeft, CheckCircle, ShoppingCart, User, Mail, Phone, MapPin, Calendar, Clock, AlertTriangle } from 'lucide-react';
 
 const CheckoutPage = ({ language }) => {
   const navigate = useNavigate();
@@ -28,6 +27,10 @@ const CheckoutPage = ({ language }) => {
       step1: 'Your Information',
       step2: 'Payment',
       step3: 'Confirmation',
+      paymentUnavailableTitle: 'Payments temporarily unavailable',
+      paymentUnavailableMessage: 'We are finalizing our new payment provider. You can confirm your booking now and pay later.',
+      confirmBooking: 'Confirm Booking (Pay Later)',
+      backToInfo: 'Back to information',
       firstName: 'First Name',
       lastName: 'Last Name',
       email: 'Email',
@@ -60,6 +63,10 @@ const CheckoutPage = ({ language }) => {
       step1: 'Vos Informations',
       step2: 'Paiement',
       step3: 'Confirmation',
+      paymentUnavailableTitle: 'Paiements temporairement indisponibles',
+      paymentUnavailableMessage: 'Nous finalisons notre nouveau fournisseur de paiement. Vous pouvez confirmer votre réservation maintenant et payer plus tard.',
+      confirmBooking: 'Confirmer la réservation (payer plus tard)',
+      backToInfo: 'Retour aux informations',
       firstName: 'Prénom',
       lastName: 'Nom',
       email: 'Courriel',
@@ -101,13 +108,8 @@ const CheckoutPage = ({ language }) => {
     setStep(2);
   };
 
-  const handlePaymentSuccess = (paymentData) => {
-    console.log('Payment successful:', paymentData);
+  const handleConfirmBooking = () => {
     setStep(3);
-  };
-
-  const handlePaymentError = (error) => {
-    console.error('Payment error:', error);
   };
 
   // Empty cart view
@@ -361,19 +363,34 @@ const CheckoutPage = ({ language }) => {
             )}
 
             {step === 2 && (
-              <div>
-                <button
-                  onClick={() => setStep(1)}
-                  className="mb-4 text-blue-600 hover:text-blue-800 flex items-center"
-                >
-                  <ArrowLeft size={18} className="mr-1" />
-                  {t.step1}
-                </button>
-                <SquarePayment
-                  language={language}
-                  onSuccess={handlePaymentSuccess}
-                  onError={handlePaymentError}
-                />
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="text-yellow-600 mt-1" size={22} />
+                  <div>
+                    <h2 className="text-lg font-semibold text-yellow-800">
+                      {t.paymentUnavailableTitle}
+                    </h2>
+                    <p className="text-sm text-yellow-700 mt-2">
+                      {t.paymentUnavailableMessage}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <button
+                    onClick={() => setStep(1)}
+                    className="inline-flex items-center px-4 py-2 rounded-lg border border-yellow-300 text-yellow-800 hover:bg-yellow-100"
+                  >
+                    <ArrowLeft size={16} className="mr-2" />
+                    {t.backToInfo}
+                  </button>
+                  <button
+                    onClick={handleConfirmBooking}
+                    className="inline-flex items-center px-5 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                  >
+                    {t.confirmBooking}
+                  </button>
+                </div>
               </div>
             )}
           </div>

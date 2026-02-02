@@ -62,12 +62,9 @@ railway up
 ```
 Settings → Variables → Add All:
 
-SQUARE_ACCESS_TOKEN=sq0atp-xxxxxxxx
-SQUARE_APPLICATION_ID=sq0idp-xxxxxxxx
-SQUARE_LOCATION_ID=Lxxxxxxxx
-SQUARE_ENVIRONMENT=sandbox
 PORT=3001
 NODE_ENV=production
+JWT_SECRET=your_long_random_secret
 FRONTEND_URL=https://mytrouvepro11.netlify.app
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
@@ -82,11 +79,8 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 curl https://your-app.up.railway.app/
 # Should return: {"status":"online",...}
 
-curl https://your-app.up.railway.app/api/test
-# Should return Square location info
-
-curl https://your-app.up.railway.app/api/config
-# Should return Square app ID
+curl https://your-app.up.railway.app/api/health
+# Should return: {"status":"ok"}
 ```
 
 ---
@@ -102,9 +96,6 @@ curl https://your-app.up.railway.app/api/config
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_anon_key
 VITE_BACKEND_URL=https://your-app.up.railway.app
-VITE_SQUARE_APPLICATION_ID=sq0idp-xxxxxxxx
-VITE_SQUARE_LOCATION_ID=Lxxxxxxxx
-VITE_SQUARE_ENVIRONMENT=sandbox
 ```
 
 ### 3.2 Replace Files
@@ -172,14 +163,11 @@ import { categories, getCategoryName } from '../data/categories';
 5. Check if image saved to Supabase Storage (if configured)
 ```
 
-### 4.3 Test Square Payments
+### 4.3 Payments (Temporarily Disabled)
 
 ```
-1. As seeker, book a service
-2. Proceed to checkout
-3. Use Square test card: 4111 1111 1111 1111
-4. Verify payment in Square Dashboard
-5. Check booking in Supabase → bookings table
+Payments are disabled while the new gateway is being integrated.
+Users can still register and book services without paying online.
 ```
 
 ### 4.4 Test 60+ Categories
@@ -205,18 +193,7 @@ import { categories, getCategoryName } from '../data/categories';
 - [ ] Enable HTTPS only
 - [ ] Add CSP headers
 
-### 5.2 Switch to Production Square
-
-```
-1. Square Dashboard → Production
-2. Get production credentials
-3. Update environment variables:
-   SQUARE_ENVIRONMENT=production
-   SQUARE_ACCESS_TOKEN=prod_token
-4. Redeploy backend
-```
-
-### 5.3 Add Terms & Privacy
+### 5.2 Add Terms & Privacy
 
 ```
 Create pages:
@@ -251,7 +228,6 @@ Before sharing QR code:
 - [ ] Deployed to Railway/Render
 - [ ] Environment variables configured
 - [ ] Health check passing
-- [ ] Square connection working
 - [ ] CORS configured for Netlify
 
 ### Frontend  
@@ -266,7 +242,6 @@ Before sharing QR code:
 - [ ] Login/logout working
 - [ ] 60+ categories visible
 - [ ] Photo watermarking working
-- [ ] Square payments processing
 - [ ] Bookings saving to database
 
 ### Testing
@@ -274,7 +249,6 @@ Before sharing QR code:
 - [ ] Add test service with photos
 - [ ] Create test seeker account
 - [ ] Make test booking
-- [ ] Process test payment
 - [ ] Verify data in Supabase
 
 ### Polish
@@ -319,13 +293,6 @@ Check Supabase URL and keys in .env
 Verify RLS policies don't block access
 ```
 
-### "Square payment failed"
-```
-Check Square credentials
-Verify sandbox vs production mode
-Check backend logs in Railway
-```
-
 ### "Images not uploading"
 ```
 Configure Supabase Storage bucket
@@ -345,7 +312,6 @@ Clear browser cache
 ## 📞 SUPPORT RESOURCES
 
 - Supabase Docs: https://supabase.com/docs
-- Square API Docs: https://developer.squareup.com
 - Railway Docs: https://docs.railway.app
 - React Router: https://reactrouter.com
 
