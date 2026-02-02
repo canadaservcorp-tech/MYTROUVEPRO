@@ -41,6 +41,7 @@ app.use(express.json());
 // ENVIRONMENT
 // ============================================
 const runtimeEnv = process.env.NODE_ENV || 'development';
+const PAYMENTS_ENABLED = false;
 const JWT_SECRET = process.env.JWT_SECRET || 'mytrouvepro-dev-secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 const BCRYPT_SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
@@ -83,6 +84,7 @@ app.get('/', (req, res) => {
     service: 'myTROUVEpro API Server',
     company: 'Performance Cristal Technologies Avancées S.A.',
     environment: runtimeEnv,
+    paymentsEnabled: PAYMENTS_ENABLED,
     timestamp: new Date().toISOString()
   });
 });
@@ -90,6 +92,7 @@ app.get('/', (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
+    paymentsEnabled: PAYMENTS_ENABLED,
     timestamp: new Date().toISOString()
   });
 });
@@ -274,6 +277,7 @@ app.get('/api/auth/me', (req, res) => {
 // ============================================
 const paymentsDisabledResponse = {
   success: false,
+  paymentsEnabled: PAYMENTS_ENABLED,
   error: 'Payments are temporarily disabled while we transition gateways.'
 };
 
