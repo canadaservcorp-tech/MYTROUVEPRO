@@ -511,11 +511,11 @@ setInterval(() => {
 // CONTACT FORM EMAIL
 // ============================================
 
-// Email transporter configuration
+// Email transporter configuration - using port 465 with SSL for better cloud compatibility
 const emailTransporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
