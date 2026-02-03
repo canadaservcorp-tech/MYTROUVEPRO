@@ -588,7 +588,7 @@ app.post('/api/contact', async (req, res) => {
     } else {
       try {
         const { data, error } = await resend.emails.send({
-          from: 'myTROUVEpro <onboarding@resend.dev>',
+          from: 'myTROUVEpro Contact <contact@mytrouvepro.net>',
           to: [ADMIN_EMAIL],
           replyTo: email,
           subject: `[myTROUVEpro Contact] ${subject}`,
