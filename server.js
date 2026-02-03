@@ -11,7 +11,7 @@ import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 dotenv.config();
 
@@ -508,25 +508,14 @@ setInterval(() => {
 }, 60 * 60 * 1000); // Run every hour
 
 // ============================================
-// CONTACT FORM EMAIL
+// CONTACT FORM EMAIL (using Resend API)
 // ============================================
 
-// Email transporter configuration - using port 465 with SSL for better cloud compatibility
-const emailTransporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  connectionTimeout: 30000,
-  greetingTimeout: 15000,
-  socketTimeout: 30000
-});
+// Initialize Resend client
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Log email configuration status on startup
-console.log(`Email configured: ${process.env.EMAIL_USER ? 'YES' : 'NO'} (${process.env.EMAIL_USER || 'not set'})`);
+console.log(`Email configured: ${process.env.RESEND_API_KEY ? 'YES (Resend)' : 'NO'}`);
 
 // Contact form endpoint - sends email to admin
 app.post('/api/contact', async (req, res) => {
@@ -553,75 +542,68 @@ app.post('/api/contact', async (req, res) => {
     // Admin email address
     const ADMIN_EMAIL = 'canada.servcorp@gmail.com';
 
-    // Email content
-    const mailOptions = {
-      from: `"myTROUVEpro Contact" <${process.env.EMAIL_USER || 'noreply@mytrouvepro.net'}>`,
-      to: ADMIN_EMAIL,
-      replyTo: email,
-      subject: `[myTROUVEpro Contact] ${subject}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background-color: #003DA5; color: white; padding: 20px; text-align: center;">
-            <h1 style="margin: 0;">myTROUVEpro</h1>
-            <p style="margin: 5px 0 0 0;">New Contact Form Message</p>
-          </div>
-          <div style="padding: 20px; background-color: #f9f9f9;">
-            <h2 style="color: #003DA5; margin-top: 0;">Message Details</h2>
-            <table style="width: 100%; border-collapse: collapse;">
-              <tr>
-                <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold; width: 120px;">From:</td>
-                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${name}</td>
-              </tr>
-              <tr>
-                <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold;">Email:</td>
-                <td style="padding: 10px; border-bottom: 1px solid #ddd;"><a href="mailto:${email}">${email}</a></td>
-              </tr>
-              <tr>
-                <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold;">Subject:</td>
-                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${subject}</td>
-              </tr>
-              <tr>
-                <td style="padding: 10px; font-weight: bold; vertical-align: top;">Message:</td>
-                <td style="padding: 10px;">${message.replace(/\n/g, '<br>')}</td>
-              </tr>
-            </table>
-          </div>
-          <div style="padding: 15px; background-color: #003DA5; color: white; text-align: center; font-size: 12px;">
-            <p style="margin: 0;">This message was sent from the contact form at www.mytrouvepro.net</p>
-            <p style="margin: 5px 0 0 0;">© 2026 Performance Cristal Technologies Avancées S.A.</p>
-          </div>
+    // Email HTML content
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background-color: #003DA5; color: white; padding: 20px; text-align: center;">
+          <h1 style="margin: 0;">myTROUVEpro</h1>
+          <p style="margin: 5px 0 0 0;">New Contact Form Message</p>
         </div>
-      `,
-      text: `
-New Contact Form Message from myTROUVEpro
+        <div style="padding: 20px; background-color: #f9f9f9;">
+          <h2 style="color: #003DA5; margin-top: 0;">Message Details</h2>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold; width: 120px;">From:</td>
+              <td style="padding: 10px; border-bottom: 1px solid #ddd;">${name}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold;">Email:</td>
+              <td style="padding: 10px; border-bottom: 1px solid #ddd;"><a href="mailto:${email}">${email}</a></td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold;">Subject:</td>
+              <td style="padding: 10px; border-bottom: 1px solid #ddd;">${subject}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; font-weight: bold; vertical-align: top;">Message:</td>
+              <td style="padding: 10px;">${message.replace(/\n/g, '<br>')}</td>
+            </tr>
+          </table>
+        </div>
+        <div style="padding: 15px; background-color: #003DA5; color: white; text-align: center; font-size: 12px;">
+          <p style="margin: 0;">This message was sent from the contact form at www.mytrouvepro.net</p>
+          <p style="margin: 5px 0 0 0;">© 2026 Performance Cristal Technologies Avancées S.A.</p>
+        </div>
+      </div>
+    `;
 
-From: ${name}
-Email: ${email}
-Subject: ${subject}
-
-Message:
-${message}
-
----
-This message was sent from the contact form at www.mytrouvepro.net
-      `
-    };
-
-    // Try to send email
-    console.log(`Attempting to send email to ${ADMIN_EMAIL}...`);
-    console.log(`Email user configured: ${process.env.EMAIL_USER ? 'YES' : 'NO'}`);
+    // Try to send email using Resend
+    console.log(`Attempting to send email to ${ADMIN_EMAIL} via Resend...`);
+    console.log(`Resend API configured: ${process.env.RESEND_API_KEY ? 'YES' : 'NO'}`);
     
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.log(`Email credentials not configured - storing message only`);
+    if (!process.env.RESEND_API_KEY) {
+      console.log(`Resend API key not configured - storing message only`);
       console.log(`Contact form submission from ${name} (${email}): ${subject}`);
       console.log(`Message: ${message}`);
     } else {
       try {
-        await emailTransporter.sendMail(mailOptions);
-        console.log(`Contact form email sent successfully from ${email} to ${ADMIN_EMAIL}`);
+        const { data, error } = await resend.emails.send({
+          from: 'myTROUVEpro <onboarding@resend.dev>',
+          to: [ADMIN_EMAIL],
+          replyTo: email,
+          subject: `[myTROUVEpro Contact] ${subject}`,
+          html: htmlContent
+        });
+        
+        if (error) {
+          console.error(`Email sending failed: ${error.message}`);
+          console.log(`Contact form submission from ${name} (${email}): ${subject}`);
+          console.log(`Message: ${message}`);
+        } else {
+          console.log(`Contact form email sent successfully! ID: ${data.id}`);
+        }
       } catch (emailError) {
         console.error(`Email sending failed: ${emailError.message}`);
-        console.error(`Error code: ${emailError.code}`);
         console.log(`Contact form submission from ${name} (${email}): ${subject}`);
         console.log(`Message: ${message}`);
       }
