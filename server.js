@@ -513,12 +513,20 @@ setInterval(() => {
 
 // Email transporter configuration
 const emailTransporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,
   auth: {
-    user: process.env.EMAIL_USER || 'noreply@mytrouvepro.net',
-    pass: process.env.EMAIL_PASS || ''
-  }
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  },
+  connectionTimeout: 30000,
+  greetingTimeout: 15000,
+  socketTimeout: 30000
 });
+
+// Log email configuration status on startup
+console.log(`Email configured: ${process.env.EMAIL_USER ? 'YES' : 'NO'} (${process.env.EMAIL_USER || 'not set'})`);
 
 // Contact form endpoint - sends email to admin
 app.post('/api/contact', async (req, res) => {
@@ -600,15 +608,23 @@ This message was sent from the contact form at www.mytrouvepro.net
     };
 
     // Try to send email
-    try {
-      await emailTransporter.sendMail(mailOptions);
-      console.log(`Contact form email sent from ${email} to ${ADMIN_EMAIL}`);
-    } catch (emailError) {
-      // If email sending fails, log it but still return success
-      // This allows the form to work even without email configuration
-      console.log(`Email sending skipped (not configured): ${emailError.message}`);
+    console.log(`Attempting to send email to ${ADMIN_EMAIL}...`);
+    console.log(`Email user configured: ${process.env.EMAIL_USER ? 'YES' : 'NO'}`);
+    
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.log(`Email credentials not configured - storing message only`);
       console.log(`Contact form submission from ${name} (${email}): ${subject}`);
       console.log(`Message: ${message}`);
+    } else {
+      try {
+        await emailTransporter.sendMail(mailOptions);
+        console.log(`Contact form email sent successfully from ${email} to ${ADMIN_EMAIL}`);
+      } catch (emailError) {
+        console.error(`Email sending failed: ${emailError.message}`);
+        console.error(`Error code: ${emailError.code}`);
+        console.log(`Contact form submission from ${name} (${email}): ${subject}`);
+        console.log(`Message: ${message}`);
+      }
     }
 
     res.json({
