@@ -10,6 +10,7 @@ import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 
@@ -504,6 +505,124 @@ setInterval(() => {
     console.log(`[Auto-Cleanup] ${new Date().toISOString()}: Cleaned ${result.cleanedCount} expired subscriptions, deleted ${result.photosDeleted} photos`);
   }
 }, 60 * 60 * 1000); // Run every hour
+
+// ============================================
+// CONTACT FORM EMAIL
+// ============================================
+
+// Email transporter configuration
+const emailTransporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || 'noreply@mytrouvepro.net',
+    pass: process.env.EMAIL_PASS || ''
+  }
+});
+
+// Contact form endpoint - sends email to admin
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    // Validation
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({
+        success: false,
+        error: 'All fields are required: name, email, subject, message'
+      });
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid email address'
+      });
+    }
+
+    // Admin email address
+    const ADMIN_EMAIL = 'canada.servcorp@gmail.com';
+
+    // Email content
+    const mailOptions = {
+      from: `"myTROUVEpro Contact" <${process.env.EMAIL_USER || 'noreply@mytrouvepro.net'}>`,
+      to: ADMIN_EMAIL,
+      replyTo: email,
+      subject: `[myTROUVEpro Contact] ${subject}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background-color: #003DA5; color: white; padding: 20px; text-align: center;">
+            <h1 style="margin: 0;">myTROUVEpro</h1>
+            <p style="margin: 5px 0 0 0;">New Contact Form Message</p>
+          </div>
+          <div style="padding: 20px; background-color: #f9f9f9;">
+            <h2 style="color: #003DA5; margin-top: 0;">Message Details</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold; width: 120px;">From:</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${name}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold;">Email:</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;"><a href="mailto:${email}">${email}</a></td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold;">Subject:</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${subject}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px; font-weight: bold; vertical-align: top;">Message:</td>
+                <td style="padding: 10px;">${message.replace(/\n/g, '<br>')}</td>
+              </tr>
+            </table>
+          </div>
+          <div style="padding: 15px; background-color: #003DA5; color: white; text-align: center; font-size: 12px;">
+            <p style="margin: 0;">This message was sent from the contact form at www.mytrouvepro.net</p>
+            <p style="margin: 5px 0 0 0;">© 2026 Performance Cristal Technologies Avancées S.A.</p>
+          </div>
+        </div>
+      `,
+      text: `
+New Contact Form Message from myTROUVEpro
+
+From: ${name}
+Email: ${email}
+Subject: ${subject}
+
+Message:
+${message}
+
+---
+This message was sent from the contact form at www.mytrouvepro.net
+      `
+    };
+
+    // Try to send email
+    try {
+      await emailTransporter.sendMail(mailOptions);
+      console.log(`Contact form email sent from ${email} to ${ADMIN_EMAIL}`);
+    } catch (emailError) {
+      // If email sending fails, log it but still return success
+      // This allows the form to work even without email configuration
+      console.log(`Email sending skipped (not configured): ${emailError.message}`);
+      console.log(`Contact form submission from ${name} (${email}): ${subject}`);
+      console.log(`Message: ${message}`);
+    }
+
+    res.json({
+      success: true,
+      message: 'Your message has been received. We will get back to you soon.'
+    });
+
+  } catch (error) {
+    console.error('Contact form error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to send message. Please try again later.'
+    });
+  }
+});
 
 // ============================================
 // START SERVER
