@@ -21,6 +21,17 @@ const app = express();
 const users = [];
 let userIdCounter = 1;
 
+// Subscription tracking
+const subscriptions = [];
+let subscriptionIdCounter = 1;
+
+// Provider photos storage
+const providerPhotos = [];
+let photoIdCounter = 1;
+
+// Grace period for expired subscriptions (in days)
+const GRACE_PERIOD_DAYS = 30;
+
 // ============================================
 // MIDDLEWARE
 // ============================================
@@ -292,6 +303,207 @@ app.get('/api/payments/:paymentId/status', (req, res) => {
 app.get('/api/payments', (req, res) => {
   res.status(503).json(paymentsDisabledResponse);
 });
+
+// ============================================
+// SUBSCRIPTION MANAGEMENT
+// ============================================
+
+// Create subscription for provider
+app.post('/api/subscriptions', async (req, res) => {
+  try {
+    const { userId, plan, paymentId, photos } = req.body;
+
+    if (!userId || !plan) {
+      return res.status(400).json({
+        success: false,
+        error: 'userId and plan are required'
+      });
+    }
+
+    // Calculate subscription end date based on plan
+    const now = new Date();
+    let endDate;
+    switch (plan) {
+      case 'monthly':
+        endDate = new Date(now.setMonth(now.getMonth() + 1));
+        break;
+      case 'sixMonth':
+        endDate = new Date(now.setMonth(now.getMonth() + 6));
+        break;
+      case 'yearly':
+        endDate = new Date(now.setFullYear(now.getFullYear() + 1));
+        break;
+      default:
+        endDate = new Date(now.setMonth(now.getMonth() + 1));
+    }
+
+    const subscription = {
+      id: subscriptionIdCounter++,
+      userId,
+      plan,
+      paymentId: paymentId || null,
+      startDate: new Date().toISOString(),
+      endDate: endDate.toISOString(),
+      status: 'active',
+      createdAt: new Date().toISOString()
+    };
+
+    subscriptions.push(subscription);
+
+    // Store photos if provided
+    if (photos && Array.isArray(photos)) {
+      photos.forEach(photoData => {
+        providerPhotos.push({
+          id: photoIdCounter++,
+          userId,
+          subscriptionId: subscription.id,
+          data: photoData,
+          createdAt: new Date().toISOString()
+        });
+      });
+    }
+
+    // Update user status
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      user.subscriptionId = subscription.id;
+      user.subscriptionEndDate = subscription.endDate;
+    }
+
+    res.status(201).json({
+      success: true,
+      subscription
+    });
+
+  } catch (error) {
+    console.error('Subscription creation error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create subscription: ' + error.message
+    });
+  }
+});
+
+// Get subscription status
+app.get('/api/subscriptions/:userId', (req, res) => {
+  const userId = parseInt(req.params.userId);
+  const subscription = subscriptions.find(s => s.userId === userId && s.status === 'active');
+  
+  if (!subscription) {
+    return res.status(404).json({
+      success: false,
+      error: 'No active subscription found'
+    });
+  }
+
+  const now = new Date();
+  const endDate = new Date(subscription.endDate);
+  const isExpired = now > endDate;
+  const daysRemaining = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+
+  res.json({
+    success: true,
+    subscription: {
+      ...subscription,
+      isExpired,
+      daysRemaining: isExpired ? 0 : daysRemaining
+    }
+  });
+});
+
+// ============================================
+// AUTOMATIC CLEANUP SERVICE
+// ============================================
+
+// Cleanup expired subscriptions and their data
+function cleanupExpiredSubscriptions() {
+  const now = new Date();
+  const cleanupDate = new Date(now.getTime() - (GRACE_PERIOD_DAYS * 24 * 60 * 60 * 1000));
+  
+  let cleanedCount = 0;
+  let photosDeleted = 0;
+
+  // Find expired subscriptions past grace period
+  subscriptions.forEach(subscription => {
+    const endDate = new Date(subscription.endDate);
+    
+    if (endDate < cleanupDate && subscription.status === 'active') {
+      // Mark subscription as expired
+      subscription.status = 'expired';
+      
+      // Delete associated photos
+      const userPhotos = providerPhotos.filter(p => p.subscriptionId === subscription.id);
+      userPhotos.forEach(photo => {
+        const index = providerPhotos.indexOf(photo);
+        if (index > -1) {
+          providerPhotos.splice(index, 1);
+          photosDeleted++;
+        }
+      });
+
+      // Deactivate user account
+      const user = users.find(u => u.id === subscription.userId);
+      if (user) {
+        user.status = 'inactive';
+        user.deactivatedAt = new Date().toISOString();
+        user.deactivationReason = 'subscription_expired';
+      }
+
+      cleanedCount++;
+    }
+  });
+
+  return { cleanedCount, photosDeleted };
+}
+
+// Manual cleanup endpoint (for admin)
+app.post('/api/admin/cleanup', (req, res) => {
+  const result = cleanupExpiredSubscriptions();
+  
+  console.log(`Cleanup completed: ${result.cleanedCount} subscriptions expired, ${result.photosDeleted} photos deleted`);
+  
+  res.json({
+    success: true,
+    message: 'Cleanup completed',
+    ...result
+  });
+});
+
+// Get cleanup status
+app.get('/api/admin/cleanup-status', (req, res) => {
+  const now = new Date();
+  const cleanupDate = new Date(now.getTime() - (GRACE_PERIOD_DAYS * 24 * 60 * 60 * 1000));
+  
+  const expiredSubscriptions = subscriptions.filter(s => {
+    const endDate = new Date(s.endDate);
+    return endDate < cleanupDate && s.status === 'active';
+  });
+
+  const pendingCleanup = subscriptions.filter(s => {
+    const endDate = new Date(s.endDate);
+    return endDate < now && endDate >= cleanupDate && s.status === 'active';
+  });
+
+  res.json({
+    success: true,
+    stats: {
+      totalSubscriptions: subscriptions.length,
+      activeSubscriptions: subscriptions.filter(s => s.status === 'active').length,
+      expiredSubscriptions: expiredSubscriptions.length,
+      pendingCleanup: pendingCleanup.length,
+      totalPhotos: providerPhotos.length,
+      gracePeriodDays: GRACE_PERIOD_DAYS
+    }
+  });
+});
+
+// Automatic cleanup job - runs every hour
+setInterval(() => {
+  const result = cleanupExpiredSubscriptions();
+  if (result.cleanedCount > 0) {
+    console.log(`[Auto-Cleanup] ${new Date().toISOString()}: Cleaned ${result.cleanedCount} expired subscriptions, deleted ${result.photosDeleted} photos`);
+  }
+}, 60 * 60 * 1000); // Run every hour
 
 // ============================================
 // START SERVER
