@@ -1,8 +1,9 @@
 // ============================================
 // MYTROUVEPRO - BACKEND API SERVER
 // ============================================
-// © 2025 Performance Cristal Technologies Avancées S.A.
+// © 2025-2026 Performance Cristal Technologies Avancées S.A.
 // NEQ: 2280629637
+// Version: 2.1.0 - Contact Form Email Support
 // ============================================
 
 import express from 'express';
